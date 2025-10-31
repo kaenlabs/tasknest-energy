@@ -53,4 +53,27 @@ export const en = {
   totalTasks: 'Total',
   completedCount: 'Completed',
   pendingCount: 'Pending',
+
+  // Onboarding
+  onboarding: {
+    skip: 'Skip',
+    next: 'Next',
+    getStarted: "Let's Start",
+    slide1: {
+      title: 'Energy-Based Tasks',
+      description: 'Organize your tasks by energy level. Plan high-energy tasks for morning, low-energy tasks for evening.',
+    },
+    slide2: {
+      title: 'Smart Time Suggestions',
+      description: 'The app suggests which tasks to do based on the time of day.',
+    },
+    slide3: {
+      title: 'Dark & Light Theme',
+      description: 'Beautiful pastel color themes that are easy on your eyes. Switch anytime or set it to automatic.',
+    },
+    slide4: {
+      title: 'Works Offline',
+      description: 'All your tasks are safely stored on your device. No internet connection required.',
+    },
+  },
 };

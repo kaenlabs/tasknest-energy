@@ -53,4 +53,27 @@ export const tr = {
   totalTasks: 'Toplam',
   completedCount: 'Tamamlanan',
   pendingCount: 'Bekleyen',
+
+  // Onboarding
+  onboarding: {
+    skip: 'Atla',
+    next: 'İleri',
+    getStarted: 'Başlayalım',
+    slide1: {
+      title: 'Enerjiye Dayalı Görevler',
+      description: 'Görevlerinizi enerji seviyenize göre organize edin. Yüksek enerjili işleri sabaha, düşük enerjili işleri akşama planlayın.',
+    },
+    slide2: {
+      title: 'Akıllı Zaman Önerileri',
+      description: 'Uygulama günün saatine göre hangi görevleri yapmanız gerektiğini size önerir.',
+    },
+    slide3: {
+      title: 'Koyu & Açık Tema',
+      description: 'Gözlerinizi yormayan güzel pastel renk temaları. İstediğiniz zaman değiştirin veya otomatik ayarlayın.',
+    },
+    slide4: {
+      title: 'Çevrimdışı Çalışır',
+      description: 'Tüm görevleriniz cihazınızda güvenle saklanır. İnternet bağlantısına ihtiyaç yoktur.',
+    },
+  },
 };
