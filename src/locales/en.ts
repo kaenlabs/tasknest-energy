@@ -17,11 +17,14 @@ export const en = {
   // Task Form
   taskTitle: 'Task Title',
   taskNote: 'Note (Optional)',
+  taskDuration: 'Estimated Duration',
   energyLevel: 'Energy Level',
   selectEnergyLevel: 'Select Energy Level',
   cancel: 'Cancel',
   save: 'Save',
   titleRequired: 'Title is required',
+  taskDetails: 'Task Details',
+  viewDetails: 'View Details',
 
   // Energy Levels
   lowEnergy: 'Low Energy',
@@ -207,5 +210,17 @@ export const en = {
     days: 'days',
     keepGoing: 'Keep going!',
     startToday: 'Start today!',
+  },
+
+  // AI Suggestions
+  ai: {
+    suggestions: 'AI Suggestions',
+    getSuggestions: 'Get AI Suggestions',
+    category: 'Category',
+    priority: 'Priority',
+    energy: 'Energy',
+    duration: 'Duration',
+    tip: 'Tip',
+    applySuggestions: 'Apply Suggestions',
   },
 };

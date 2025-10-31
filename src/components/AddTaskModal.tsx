@@ -9,11 +9,14 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { EnergyLevel, Priority, Category } from '../types/task.types';
 import { useTheme } from '../context/ThemeContext';
 import { useLocale } from '../context/LocaleContext';
+import { getTaskSuggestions, TaskSuggestion } from '../services/aiService';
+import { hapticFeedback } from '../utils/haptics';
 import { translate } from '../locales/i18n';
 import {
   getCategoryIcon,
@@ -29,7 +32,8 @@ interface AddTaskModalProps {
     note: string,
     energy: EnergyLevel,
     priority: Priority,
-    category: Category
+    category: Category,
+    estimatedDuration?: string
   ) => void;
 }
 
@@ -45,15 +49,63 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
   const [energy, setEnergy] = useState<EnergyLevel>('high');
   const [priority, setPriority] = useState<Priority>('medium');
   const [category, setCategory] = useState<Category>('other');
+  const [estimatedDuration, setEstimatedDuration] = useState<string>('');
+  const [aiSuggestion, setAiSuggestion] = useState<TaskSuggestion | null>(null);
+  const [isLoadingAI, setIsLoadingAI] = useState(false);
+
+  const handleGetAISuggestions = async () => {
+    if (!title.trim()) return;
+    
+    setIsLoadingAI(true);
+    hapticFeedback.light();
+    
+    try {
+      const suggestion = await getTaskSuggestions(title);
+      if (suggestion) {
+        setAiSuggestion(suggestion);
+        hapticFeedback.success();
+      }
+    } catch (error) {
+      console.error('AI suggestion error:', error);
+    } finally {
+      setIsLoadingAI(false);
+    }
+  };
+
+  const handleApplySuggestion = () => {
+    if (aiSuggestion) {
+      setCategory(aiSuggestion.category);
+      setPriority(aiSuggestion.priority);
+      setEnergy(aiSuggestion.energy);
+      if (aiSuggestion.estimatedDuration) {
+        setEstimatedDuration(aiSuggestion.estimatedDuration);
+      }
+      // Add AI tip to notes with lightbulb emoji
+      if (aiSuggestion.tips) {
+        const tipText = `💡 ${aiSuggestion.tips}`;
+        setNote(note ? `${note}\n\n${tipText}` : tipText);
+      }
+      hapticFeedback.selection();
+    }
+  };
 
   const handleSave = () => {
     if (title.trim()) {
-      onSave(title.trim(), note.trim(), energy, priority, category);
+      onSave(
+        title.trim(), 
+        note.trim(), 
+        energy, 
+        priority, 
+        category,
+        estimatedDuration || undefined
+      );
       setTitle('');
       setNote('');
       setEnergy('high');
       setPriority('medium');
       setCategory('other');
+      setEstimatedDuration('');
+      setAiSuggestion(null);
       onClose();
     }
   };
@@ -64,6 +116,8 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
     setEnergy('high');
     setPriority('medium');
     setCategory('other');
+    setEstimatedDuration('');
+    setAiSuggestion(null);
     onClose();
   };
 
@@ -108,11 +162,106 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
                   },
                 ]}
                 value={title}
-                onChangeText={setTitle}
+                onChangeText={(text) => {
+                  setTitle(text);
+                  setAiSuggestion(null); // Clear suggestion when editing
+                }}
                 placeholder={translate('taskTitle')}
                 placeholderTextColor={theme.textSecondary}
                 autoFocus
               />
+              
+              {/* AI Suggestion Button */}
+              {title.trim().length > 3 && !aiSuggestion && (
+                <TouchableOpacity
+                  style={[styles.aiButton, { backgroundColor: theme.primary + '15', borderColor: theme.primary }]}
+                  onPress={handleGetAISuggestions}
+                  disabled={isLoadingAI}
+                >
+                  {isLoadingAI ? (
+                    <ActivityIndicator size="small" color={theme.primary} />
+                  ) : (
+                    <>
+                      <Ionicons name="sparkles" size={18} color={theme.primary} />
+                      <Text style={[styles.aiButtonText, { color: theme.primary }]}>
+                        {translate('ai.getSuggestions')}
+                      </Text>
+                    </>
+                  )}
+                </TouchableOpacity>
+              )}
+
+              {/* AI Suggestion Card */}
+              {aiSuggestion && (
+                <View style={[styles.suggestionCard, { backgroundColor: theme.surface, borderColor: theme.primary }]}>
+                  <View style={styles.suggestionHeader}>
+                    <Ionicons name="sparkles" size={20} color={theme.primary} />
+                    <Text style={[styles.suggestionTitle, { color: theme.text }]}>
+                      {translate('ai.suggestions')}
+                    </Text>
+                    <TouchableOpacity onPress={() => setAiSuggestion(null)}>
+                      <Ionicons name="close-circle" size={20} color={theme.textSecondary} />
+                    </TouchableOpacity>
+                  </View>
+                  
+                  <View style={styles.suggestionContent}>
+                    <View style={styles.suggestionRow}>
+                      <Text style={[styles.suggestionLabel, { color: theme.textSecondary }]}>
+                        {getCategoryIcon(aiSuggestion.category)} {translate('ai.category')}:
+                      </Text>
+                      <Text style={[styles.suggestionValue, { color: theme.text }]}>
+                        {translate(`categories.${aiSuggestion.category}`)}
+                      </Text>
+                    </View>
+                    
+                    <View style={styles.suggestionRow}>
+                      <Text style={[styles.suggestionLabel, { color: theme.textSecondary }]}>
+                        🎯 {translate('ai.priority')}:
+                      </Text>
+                      <Text style={[styles.suggestionValue, { color: theme.text }]}>
+                        {translate(`priority.${aiSuggestion.priority}`)}
+                      </Text>
+                    </View>
+                    
+                    <View style={styles.suggestionRow}>
+                      <Text style={[styles.suggestionLabel, { color: theme.textSecondary }]}>
+                        ⚡ {translate('ai.energy')}:
+                      </Text>
+                      <Text style={[styles.suggestionValue, { color: theme.text }]}>
+                        {aiSuggestion.energy === 'high' ? translate('highEnergy') : translate('lowEnergy')}
+                      </Text>
+                    </View>
+
+                    {aiSuggestion.estimatedDuration && (
+                      <View style={styles.suggestionRow}>
+                        <Text style={[styles.suggestionLabel, { color: theme.textSecondary }]}>
+                          ⏱️ {translate('ai.duration')}:
+                        </Text>
+                        <Text style={[styles.suggestionValue, { color: theme.text }]}>
+                          {aiSuggestion.estimatedDuration}
+                        </Text>
+                      </View>
+                    )}
+
+                    {aiSuggestion.tips && (
+                      <View style={[styles.tipBox, { backgroundColor: theme.primary + '10' }]}>
+                        <Text style={[styles.tipText, { color: theme.text }]}>
+                          💡 {aiSuggestion.tips}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+
+                  <TouchableOpacity
+                    style={[styles.applySuggestionButton, { backgroundColor: theme.primary }]}
+                    onPress={handleApplySuggestion}
+                  >
+                    <Text style={styles.applySuggestionText}>
+                      {translate('ai.applySuggestions')}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
 
             <View style={styles.inputGroup}>
@@ -135,6 +284,26 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
                 placeholderTextColor={theme.textSecondary}
                 multiline
                 numberOfLines={3}
+              />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={[styles.label, { color: theme.text }]}>
+                ⏱️ {translate('taskDuration')}
+              </Text>
+              <TextInput
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor: theme.surface,
+                    color: theme.text,
+                    borderColor: theme.border,
+                  },
+                ]}
+                value={estimatedDuration}
+                onChangeText={setEstimatedDuration}
+                placeholder="15 dk, 30 dk, 1 saat..."
+                placeholderTextColor={theme.textSecondary}
               />
             </View>
 
@@ -446,5 +615,74 @@ const styles = StyleSheet.create({
   },
   saveButtonText: {
     color: '#fff',
+  },
+  aiButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    marginTop: 12,
+  },
+  aiButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  suggestionCard: {
+    marginTop: 16,
+    padding: 16,
+    borderRadius: 16,
+    borderWidth: 2,
+  },
+  suggestionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 12,
+  },
+  suggestionTitle: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  suggestionContent: {
+    gap: 10,
+  },
+  suggestionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  suggestionLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    minWidth: 100,
+  },
+  suggestionValue: {
+    fontSize: 14,
+    fontWeight: '500',
+    textTransform: 'capitalize',
+  },
+  tipBox: {
+    padding: 12,
+    borderRadius: 12,
+    marginTop: 8,
+  },
+  tipText: {
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  applySuggestionButton: {
+    marginTop: 12,
+    padding: 12,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  applySuggestionText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
   },
 });

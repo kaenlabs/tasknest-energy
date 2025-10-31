@@ -17,6 +17,7 @@ interface TaskCardProps {
   task: Task;
   onToggleComplete: () => void;
   onDelete: () => void;
+  onPress?: () => void;
   animatedValue?: Animated.Value;
 }
 
@@ -24,6 +25,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   task,
   onToggleComplete,
   onDelete,
+  onPress,
   animatedValue = new Animated.Value(1),
 }) => {
   const { theme } = useTheme();
@@ -45,7 +47,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
   return (
     <Animated.View style={[styles.container, animatedStyle]}>
-      <View
+      <TouchableOpacity
         style={[
           styles.card,
           {
@@ -54,10 +56,16 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             shadowColor: theme.cardShadow,
           },
         ]}
+        onPress={onPress}
+        activeOpacity={0.7}
+        disabled={!onPress}
       >
         <TouchableOpacity
           style={styles.checkboxContainer}
-          onPress={onToggleComplete}
+          onPress={(e) => {
+            e?.stopPropagation?.();
+            onToggleComplete();
+          }}
           activeOpacity={0.7}
         >
           <View
@@ -121,16 +129,28 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               {task.note}
             </Text>
           )}
+
+          {task.estimatedDuration && (
+            <View style={styles.durationContainer}>
+              <Ionicons name="time-outline" size={14} color={theme.textSecondary} />
+              <Text style={[styles.durationText, { color: theme.textSecondary }]}>
+                {task.estimatedDuration}
+              </Text>
+            </View>
+          )}
         </View>
 
         <TouchableOpacity
           style={styles.deleteButton}
-          onPress={onDelete}
+          onPress={(e) => {
+            e?.stopPropagation?.();
+            onDelete();
+          }}
           activeOpacity={0.7}
         >
           <Ionicons name="trash-outline" size={22} color={theme.textSecondary} />
         </TouchableOpacity>
-      </View>
+      </TouchableOpacity>
     </Animated.View>
   );
 };
@@ -209,6 +229,16 @@ const styles = StyleSheet.create({
   note: {
     fontSize: 14,
     lineHeight: 20,
+  },
+  durationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+    gap: 4,
+  },
+  durationText: {
+    fontSize: 12,
+    fontWeight: '500',
   },
   deleteButton: {
     marginLeft: 8,

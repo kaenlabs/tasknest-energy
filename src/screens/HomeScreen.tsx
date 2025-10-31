@@ -22,6 +22,7 @@ import { Header } from '../components/Header';
 import { FilterBar } from '../components/FilterBar';
 import { TaskCard } from '../components/TaskCard';
 import { AddTaskModal } from '../components/AddTaskModal';
+import { TaskDetailModal } from '../components/TaskDetailModal';
 import { EmptyState } from '../components/EmptyState';
 import { DevTools } from '../components/DevTools';
 import { AppTutorial } from '../components/AppTutorial';
@@ -47,6 +48,8 @@ export const HomeScreen: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<TaskFilter>('all');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
 
   const animatedValues = useRef<{ [key: string]: Animated.Value }>({}).current;
 
@@ -153,10 +156,11 @@ export const HomeScreen: React.FC = () => {
     note: string,
     energy: 'low' | 'high',
     priority: 'low' | 'medium' | 'high',
-    category: 'work' | 'personal' | 'health' | 'shopping' | 'other'
+    category: 'work' | 'personal' | 'health' | 'shopping' | 'other',
+    estimatedDuration?: string
   ) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    addTask(title, note, energy, priority, category);
+    addTask(title, note, energy, priority, category, estimatedDuration);
     hapticFeedback.light(); // Light feedback for task creation
   };
 
@@ -233,6 +237,11 @@ export const HomeScreen: React.FC = () => {
                 task={item}
                 onToggleComplete={() => handleToggleComplete(item.id)}
                 onDelete={() => handleDeleteTask(item.id)}
+                onPress={() => {
+                  setSelectedTask(item);
+                  setIsDetailModalVisible(true);
+                  hapticFeedback.light();
+                }}
                 animatedValue={getAnimatedValue(item.id)}
               />
             )}
@@ -257,6 +266,28 @@ export const HomeScreen: React.FC = () => {
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
         onSave={handleAddTask}
+      />
+
+      <TaskDetailModal
+        visible={isDetailModalVisible}
+        task={selectedTask}
+        onClose={() => {
+          setIsDetailModalVisible(false);
+          setSelectedTask(null);
+        }}
+        onEdit={() => {
+          // TODO: Implement edit functionality
+          setIsDetailModalVisible(false);
+          hapticFeedback.light();
+        }}
+        onDelete={() => {
+          if (selectedTask) {
+            handleDeleteTask(selectedTask.id);
+            setIsDetailModalVisible(false);
+            setSelectedTask(null);
+            hapticFeedback.success();
+          }
+        }}
       />
 
       <AppTutorial

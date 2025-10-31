@@ -17,11 +17,14 @@ export const tr = {
   // Task Form
   taskTitle: 'Görev Başlığı',
   taskNote: 'Not (Opsiyonel)',
+  taskDuration: 'Tahmini Süre',
   energyLevel: 'Enerji Düzeyi',
   selectEnergyLevel: 'Enerji Düzeyi Seç',
   cancel: 'İptal',
   save: 'Kaydet',
   titleRequired: 'Başlık gerekli',
+  taskDetails: 'Görev Detayları',
+  viewDetails: 'Detayları Gör',
 
   // Energy Levels
   lowEnergy: 'Düşük Enerji',
@@ -207,5 +210,17 @@ export const tr = {
     days: 'gün',
     keepGoing: 'Devam et!',
     startToday: 'Bugün başla!',
+  },
+
+  // AI Suggestions
+  ai: {
+    suggestions: 'AI Önerileri',
+    getSuggestions: 'AI Önerilerini Al',
+    category: 'Kategori',
+    priority: 'Öncelik',
+    energy: 'Enerji',
+    duration: 'Süre',
+    tip: 'İpucu',
+    applySuggestions: 'Önerileri Uygula',
   },
 };

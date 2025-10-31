@@ -12,6 +12,7 @@ export interface Task {
   completed: boolean;
   createdAt: number;
   completedAt?: number;
+  estimatedDuration?: string; // e.g., "15 mins", "1 hour", "2+ hours"
 }
 
 export type TaskFilter = 'all' | 'low' | 'high' | 'completed';

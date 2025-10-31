@@ -31,13 +31,26 @@
 - ⚡ **Queue System**: Multiple achievements shown sequentially with smooth transitions
 - ✨ **Celebration Effects**: Pulse, glow, and confetti animations on unlock
 
+#### 🤖 AI-Powered Features (New!)
+- ✨ **Smart Task Suggestions**: Google Gemini AI analyzes your task titles and suggests:
+  - 📁 Best category (Work, Personal, Health, Shopping, Other)
+  - 🎯 Priority level (High, Medium, Low)
+  - ⚡ Energy requirement (High/Low)
+  - ⏱️ Estimated duration (15 mins, 30 mins, 1 hour, 2+ hours)
+  - 💡 Helpful tips to complete the task efficiently
+- 🌐 **Multilingual AI**: Prompts adapt to your selected language (TR/EN)
+- 🎯 **One-Click Apply**: Apply all AI suggestions instantly with haptic feedback
+- 💡 **Auto-Notes**: AI tips automatically added to task notes with lightbulb emoji
+
 #### User Experience
-- 🎯 **Smart Onboarding**: Interactive 3-step tutorial for first-time users
-- � **Dark/Light Theme**: Beautiful pastel themes with automatic switching
+- 🎯 **Smart Onboarding**: Interactive 4-step tutorial for first-time users
+- 🌙 **Dark/Light Theme**: Beautiful pastel themes with automatic switching
 - 🌍 **Bilingual Support**: Full Turkish and English with reactive language switching
 - 🎨 **Modern UI**: Clean, rounded cards with 60fps smooth animations
 - 🕒 **Time-Based Suggestions**: Smart recommendations based on time of day
 - 📊 **Smart Filtering**: Filter tasks by energy level or completion status
+- 👆 **Haptic Feedback**: Tactile responses for all interactions (iOS)
+- 📋 **Task Detail View**: Tap any task to view full details, edit, or delete
 - 🛠️ **Dev Tools**: Draggable floating button with quick reset options (dev mode only)
 
 ### 🛠 Technologies
@@ -63,9 +76,27 @@ cd tasknest-energy
 # Install dependencies
 npm install
 
+# Setup environment variables (optional, for AI features)
+cp .env.example .env
+# Add your Gemini API key to .env file
+
 # Start the app
 npx expo start
 ```
+
+### 🤖 AI Features Setup (Optional)
+
+To enable AI-powered task suggestions:
+
+1. Get a **free** Google Gemini API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Create a `.env` file in the project root
+3. Add your API key:
+   ```
+   EXPO_PUBLIC_GEMINI_API_KEY=your_api_key_here
+   ```
+4. Restart the development server
+
+**Note:** AI features work without the API key, but suggestions won't be available.
 
 ### 🚀 Running the App
 
@@ -165,13 +196,26 @@ This project is open source and available under the MIT License.
 - ⚡ **Sıralı Sistem**: Birden fazla başarı pürüzsüz geçişlerle sırayla gösterilir
 - ✨ **Kutlama Efektleri**: Kilidi açıldığında pulse, glow ve konfeti animasyonları
 
+#### 🤖 Yapay Zeka Destekli Özellikler (Yeni!)
+- ✨ **Akıllı Görev Önerileri**: Google Gemini AI görev başlığınızı analiz eder ve önerir:
+  - 📁 En uygun kategori (İş, Kişisel, Sağlık, Alışveriş, Diğer)
+  - 🎯 Öncelik seviyesi (Yüksek, Orta, Düşük)
+  - ⚡ Enerji gereksinimi (Yüksek/Düşük)
+  - ⏱️ Tahmini süre (15 dk, 30 dk, 1 saat, 2+ saat)
+  - 💡 Görevi verimli tamamlamak için ipuçları
+- 🌐 **Çok Dilli AI**: Yapay zeka seçtiğiniz dile göre uyum sağlar (TR/EN)
+- 🎯 **Tek Tıkla Uygula**: Tüm AI önerilerini haptik feedback ile anında uygula
+- 💡 **Otomatik Notlar**: AI ipuçları ampul emojisiyle otomatik olarak görev notlarına eklenir
+
 #### Kullanıcı Deneyimi
-- 🎯 **Akıllı Karşılama**: İlk kullanıcılar için 3 adımlı interaktif öğretici
--  **Koyu/Açık Tema**: Otomatik geçişli güzel pastel temalar
+- 🎯 **Akıllı Karşılama**: İlk kullanıcılar için 4 adımlı interaktif öğretici
+- 🌙 **Koyu/Açık Tema**: Otomatik geçişli güzel pastel temalar
 - 🌍 **İki Dilli Destek**: Reaktif dil değişimi ile tam Türkçe ve İngilizce
 - 🎨 **Modern Arayüz**: 60fps akıcı animasyonlarla temiz, yuvarlak kartlar
 - 🕒 **Zamana Dayalı Öneriler**: Günün saatine göre akıllı öneriler
 - 📊 **Akıllı Filtreleme**: Görevleri enerji seviyesi veya tamamlanma durumuna göre filtreleyin
+- 👆 **Haptik Geri Bildirim**: Tüm etkileşimlerde dokunsal tepki (iOS)
+- 📋 **Görev Detay Görünümü**: Herhangi bir göreve dokunarak tam detayları görüntüle, düzenle veya sil
 - 🛠️ **Geliştirici Araçları**: Hızlı sıfırlama seçenekleri ile sürüklenebilir buton (geliştirme modu)
 
 ### 🛠 Teknolojiler
@@ -265,8 +309,12 @@ _Ekran görüntüleri eklenecek_
 - [x] ~~Achievement/Badge sistemi~~
 - [x] ~~Streak takibi~~
 - [x] ~~Konfeti animasyonları~~
+- [x] ~~Haptic feedback (titreşim)~~
+- [x] ~~AI-powered task suggestions (Google Gemini)~~
+- [x] ~~Task detail view~~
+- [x] ~~Estimated duration field~~
 - [ ] Haftalık özet raporu
-- [ ] Haptic feedback (titreşim)
+- [ ] Görev düzenleme (edit mode)
 - [ ] Bildirim desteği
 - [ ] Görev tekrarlama
 - [ ] Veri yedekleme/geri yükleme

@@ -9,7 +9,8 @@ interface TaskContextType {
     note: string,
     energy: EnergyLevel,
     priority: Priority,
-    category: Category
+    category: Category,
+    estimatedDuration?: string
   ) => void;
   deleteTask: (id: string) => void;
   toggleTaskCompletion: (id: string) => void;
@@ -68,7 +69,8 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     note: string,
     energy: EnergyLevel,
     priority: Priority = 'medium',
-    category: Category = 'other'
+    category: Category = 'other',
+    estimatedDuration?: string
   ) => {
     const newTask: Task = {
       id: Date.now().toString(),
@@ -79,6 +81,7 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       category,
       completed: false,
       createdAt: Date.now(),
+      estimatedDuration,
     };
     setTasks([newTask, ...tasks]);
   };
