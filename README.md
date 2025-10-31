@@ -35,7 +35,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/tasknest-energy.git
+git clone https://github.com/kaenlabs/tasknest-energy.git
 cd tasknest-energy
 
 # Install dependencies
@@ -88,7 +88,6 @@ TaskNest/
 Developed by: Kaan Çelik
 
 - GitHub: [@kaenlabs](https://github.com/kaenlabs)
-- LinkedIn: [Add your LinkedIn]
 
 ### 📝 License
 
@@ -127,7 +126,7 @@ This project is open source and available under the MIT License.
 
 ```bash
 # Depoyu klonlayın
-git clone https://github.com/YOUR_USERNAME/tasknest-energy.git
+git clone https://github.com/kaenlabs/tasknest-energy.git
 cd tasknest-energy
 
 # Bağımlılıkları yükleyin
@@ -179,7 +178,7 @@ TaskNest/
 **KΛEN Labs**  
 Geliştiren: Kaan Çelik
 
-- GitHub: [@YOUR_USERNAME](https://github.com/YOUR_USERNAME)
+- GitHub: [@kaenlabs](https://github.com/kaenlabs)
 - LinkedIn: [LinkedIn linkinizi ekleyin]
 
 ### 📝 Lisans
