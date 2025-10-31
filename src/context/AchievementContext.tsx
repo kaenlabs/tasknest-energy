@@ -2,6 +2,7 @@ import React, { createContext, useState, useContext, useEffect, ReactNode } from
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Achievement, StreakData, AchievementId } from '../types/achievement.types';
 import { getInitialAchievements } from '../utils/achievementData';
+import { hapticFeedback } from '../utils/haptics';
 
 const ACHIEVEMENTS_KEY = '@TaskNest:achievements';
 const STREAK_KEY = '@TaskNest:streak';
@@ -92,10 +93,15 @@ export const AchievementProvider: React.FC<{ children: ReactNode }> = ({ childre
       streak.lastCompletionDate === yesterdayString ||
       streak.lastCompletionDate === ''
     ) {
-      // Continue streak
+      // Continue streak - haptic for milestone streaks!
       newStreak.currentStreak = streak.currentStreak + 1;
       newStreak.lastCompletionDate = today;
       newStreak.longestStreak = Math.max(newStreak.longestStreak, newStreak.currentStreak);
+      
+      // Special haptic for streak milestones (3, 7, 30)
+      if ([3, 7, 30].includes(newStreak.currentStreak)) {
+        hapticFeedback.success();
+      }
     } else {
       // Streak broken, start new
       newStreak.currentStreak = 1;
@@ -223,6 +229,9 @@ export const AchievementProvider: React.FC<{ children: ReactNode }> = ({ childre
         newlyUnlocked.includes(a.id)
       );
       setUnlockedQueue(prev => [...prev, ...unlockedAchievements]);
+      
+      // Success haptic feedback for achievement unlock!
+      hapticFeedback.success();
     }
     
     return newlyUnlocked;

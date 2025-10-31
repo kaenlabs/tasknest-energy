@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { useLocale } from '../context/LocaleContext';
+import { hapticFeedback } from '../utils/haptics';
 import { translate } from '../locales/i18n';
 import { getTimeOfDay } from '../utils/timeUtils';
 
@@ -18,6 +19,7 @@ export const Header: React.FC = () => {
   };
 
   const handleLanguageToggle = () => {
+    hapticFeedback.selection();
     changeLocale(locale === 'tr' ? 'en' : 'tr');
   };
 
@@ -43,7 +45,10 @@ export const Header: React.FC = () => {
 
         <TouchableOpacity
           style={[styles.iconButton, { backgroundColor: theme.surface }]}
-          onPress={toggleTheme}
+          onPress={() => {
+            hapticFeedback.selection();
+            toggleTheme();
+          }}
           activeOpacity={0.7}
         >
           <Ionicons

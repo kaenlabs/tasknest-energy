@@ -26,6 +26,7 @@ import { EmptyState } from '../components/EmptyState';
 import { DevTools } from '../components/DevTools';
 import { AppTutorial } from '../components/AppTutorial';
 import { StreakCard } from '../components/StreakCard';
+import { hapticFeedback } from '../utils/haptics';
 import { translate } from '../locales/i18n';
 
 const { width, height } = Dimensions.get('window');
@@ -156,9 +157,12 @@ export const HomeScreen: React.FC = () => {
   ) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     addTask(title, note, energy, priority, category);
+    hapticFeedback.light(); // Light feedback for task creation
   };
 
   const handleDeleteTask = (id: string) => {
+    hapticFeedback.warning(); // Warning feedback for delete action
+    
     // Animate out
     if (!animatedValues[id]) {
       animatedValues[id] = new Animated.Value(1);
@@ -180,7 +184,9 @@ export const HomeScreen: React.FC = () => {
     const task = tasks.find((t) => t.id === id);
     
     if (task && !task.completed) {
-      // Completing a task
+      // Completing a task - success haptic!
+      hapticFeedback.medium();
+      
       await updateStreak();
       
       // Check achievements after a small delay to get updated tasks
@@ -188,6 +194,9 @@ export const HomeScreen: React.FC = () => {
         const completedCount = tasks.filter((t) => t.completed).length + 1;
         await checkAndUnlockAchievements(completedCount, tasks);
       }, 100);
+    } else {
+      // Uncompleting a task - light feedback
+      hapticFeedback.light();
     }
     
     toggleTaskCompletion(id);
@@ -235,7 +244,10 @@ export const HomeScreen: React.FC = () => {
 
       <TouchableOpacity
         style={[styles.fab, { backgroundColor: theme.primary }]}
-        onPress={() => setIsModalVisible(true)}
+        onPress={() => {
+          hapticFeedback.light();
+          setIsModalVisible(true);
+        }}
         activeOpacity={0.8}
       >
         <Ionicons name="add" size={32} color="#fff" />

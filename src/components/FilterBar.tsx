@@ -9,6 +9,7 @@ import {
 import { TaskFilter } from '../types/task.types';
 import { useTheme } from '../context/ThemeContext';
 import { useLocale } from '../context/LocaleContext';
+import { hapticFeedback } from '../utils/haptics';
 import { translate } from '../locales/i18n';
 
 interface FilterBarProps {
@@ -47,7 +48,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               borderColor: activeFilter === filter.key ? theme.primary : theme.border,
             },
           ]}
-          onPress={() => onFilterChange(filter.key)}
+          onPress={() => {
+            hapticFeedback.selection();
+            onFilterChange(filter.key);
+          }}
           activeOpacity={0.7}
         >
           <Text
