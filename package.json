@@ -1,6 +1,8 @@
 {
   "name": "tasknest",
   "version": "1.0.0",
+  "author": "KΛEN Labs - Kaan Çelik",
+  "description": "Energy-based task management app built with React Native and Expo",
   "main": "index.ts",
   "scripts": {
     "start": "expo start",
@@ -9,13 +11,24 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/vector-icons": "^15.0.3",
+    "@react-native-async-storage/async-storage": "^2.2.0",
     "expo": "~54.0.20",
+    "expo-localization": "^17.0.7",
     "expo-status-bar": "~3.0.8",
+    "i18n-js": "^4.5.1",
     "react": "19.1.0",
     "react-native": "0.81.5"
   },
   "devDependencies": {
     "@types/react": "~19.1.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.2",
+    "@typescript-eslint/parser": "^8.46.2",
+    "eslint": "^9.38.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "prettier": "^3.6.2",
     "typescript": "~5.9.2"
   },
   "private": true
