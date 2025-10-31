@@ -5,8 +5,10 @@ import { View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { useLocale } from '../context/LocaleContext';
+import { useAchievements } from '../context/AchievementContext';
 import { HomeScreen } from '../screens/HomeScreen';
 import { StatsScreen } from '../screens/StatsScreen';
+import { AchievementQueue } from '../components/AchievementQueue';
 import { translate } from '../locales/i18n';
 
 export type RootTabParamList = {
@@ -19,9 +21,11 @@ const Tab = createMaterialTopTabNavigator<RootTabParamList>();
 export const MainNavigator: React.FC = () => {
   const { theme } = useTheme();
   const { locale } = useLocale(); // This will trigger re-render on language change
+  const { unlockedQueue, clearUnlockedQueue } = useAchievements();
 
   return (
-    <NavigationContainer>
+    <>
+      <NavigationContainer>
       <Tab.Navigator
         tabBarPosition="bottom"
         screenOptions={{
@@ -67,5 +71,12 @@ export const MainNavigator: React.FC = () => {
         />
       </Tab.Navigator>
     </NavigationContainer>
+    
+    {/* Achievement notification queue with confetti */}
+    <AchievementQueue
+      achievements={unlockedQueue}
+      onComplete={clearUnlockedQueue}
+    />
+    </>
   );
 };

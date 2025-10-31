@@ -9,6 +9,8 @@ const STREAK_KEY = '@TaskNest:streak';
 interface AchievementContextType {
   achievements: Achievement[];
   streak: StreakData;
+  unlockedQueue: Achievement[];
+  clearUnlockedQueue: () => void;
   checkAndUnlockAchievements: (totalCompleted: number, tasks: any[]) => Promise<AchievementId[]>;
   updateStreak: () => Promise<void>;
   resetAchievements: () => Promise<void>;
@@ -23,6 +25,7 @@ export const AchievementProvider: React.FC<{ children: ReactNode }> = ({ childre
     longestStreak: 0,
     lastCompletionDate: '',
   });
+  const [unlockedQueue, setUnlockedQueue] = useState<Achievement[]>([]);
 
   useEffect(() => {
     loadAchievements();
@@ -213,6 +216,15 @@ export const AchievementProvider: React.FC<{ children: ReactNode }> = ({ childre
     });
 
     await saveAchievements(newAchievements);
+    
+    // Add newly unlocked achievements to queue
+    if (newlyUnlocked.length > 0) {
+      const unlockedAchievements = newAchievements.filter(a => 
+        newlyUnlocked.includes(a.id)
+      );
+      setUnlockedQueue(prev => [...prev, ...unlockedAchievements]);
+    }
+    
     return newlyUnlocked;
   };
 
@@ -222,11 +234,17 @@ export const AchievementProvider: React.FC<{ children: ReactNode }> = ({ childre
     await saveStreak({ currentStreak: 0, longestStreak: 0, lastCompletionDate: '' });
   };
 
+  const clearUnlockedQueue = () => {
+    setUnlockedQueue([]);
+  };
+
   return (
     <AchievementContext.Provider
       value={{
         achievements,
         streak,
+        unlockedQueue,
+        clearUnlockedQueue,
         checkAndUnlockAchievements,
         updateStreak,
         resetAchievements,

@@ -12,28 +12,44 @@
 
 ### ✨ Features
 
+#### Core Features
 - ✅ **Task Management**: Add, complete, and delete tasks with ease
 - ⚡ **Energy-Based Organization**: Categorize tasks by energy level (High ⚡ / Low 💤)
 - �️ **Categories & Priorities**: Organize tasks with 5 categories (Work, Personal, Health, Shopping, Other) and 3 priority levels
 - 📊 **Statistics Dashboard**: Track your productivity with charts, completion rates, and category/priority breakdowns
-- 🗂️ **Tab Navigation**: Easy switching between Tasks and Statistics screens
-- 🎯 **Smart Onboarding**: Interactive tutorial for first-time users
-- �🌓 **Dark/Light Theme**: Beautiful pastel themes with automatic switching
-- 🌍 **Bilingual Support**: Full Turkish and English language support
-- 💾 **Persistent Storage**: Tasks are saved locally with AsyncStorage
-- 🎨 **Modern UI**: Clean, rounded cards with smooth animations
+- 🗂️ **Tab Navigation**: Swipeable Material Top Tabs for easy switching between screens
+- 💾 **Persistent Storage**: All data saved locally with AsyncStorage
+
+#### 🎮 Gamification & Motivation System
+- 🏆 **12 Unique Achievements**: Unlock achievements with progress tracking
+  - 🎯 First Task, ⭐ Task Master (10/50/100), 🔥 Streak Master (3/7/30 days)
+  - 👑 Week Warrior, 💎 Category Master, 🚀 Priority Pro
+  - 🌅 Early Bird & 🦉 Night Owl (time-based achievements)
+- 🔥 **Streak Counter**: Track daily completion streaks with animated fire emoji
+- 🎊 **Achievement Notifications**: Game-style notification cards with confetti celebrations
+- 📊 **Progress Tracking**: Visual progress bars for all achievements
+- ⚡ **Queue System**: Multiple achievements shown sequentially with smooth transitions
+- ✨ **Celebration Effects**: Pulse, glow, and confetti animations on unlock
+
+#### User Experience
+- 🎯 **Smart Onboarding**: Interactive 3-step tutorial for first-time users
+- � **Dark/Light Theme**: Beautiful pastel themes with automatic switching
+- 🌍 **Bilingual Support**: Full Turkish and English with reactive language switching
+- 🎨 **Modern UI**: Clean, rounded cards with 60fps smooth animations
 - 🕒 **Time-Based Suggestions**: Smart recommendations based on time of day
 - 📊 **Smart Filtering**: Filter tasks by energy level or completion status
+- 🛠️ **Dev Tools**: Draggable floating button with quick reset options (dev mode only)
 
 ### 🛠 Technologies
 
 - **React Native** with **Expo SDK 54**
 - **TypeScript** for type safety
 - **React Context API** for state management
-- **React Navigation** for tab navigation
-- **AsyncStorage** for local data persistence
-- **i18n-js** for internationalization
-- **React Native Reanimated** for smooth animations
+- **React Navigation** (Material Top Tabs) for swipeable tab navigation
+- **AsyncStorage** for local data persistence (tasks, achievements, streaks)
+- **i18n-js** for internationalization with reactive updates
+- **React Native Reanimated v4** for 60fps smooth animations
+- **React Native Confetti Cannon** for celebration effects
 - **Expo Vector Icons** for beautiful icons
 - **ESLint & Prettier** for code quality
 
@@ -79,12 +95,32 @@ npm run web
 TaskNest/
 ├── src/
 │   ├── components/      # Reusable UI components
-│   ├── screens/         # Screen components (Home, Stats, Onboarding)
-│   ├── context/         # React Context providers (Theme, Locale, Task)
+│   │   ├── AchievementCard.tsx        # Achievement display card
+│   │   ├── AchievementNotification.tsx # Game-style unlock notification
+│   │   ├── AchievementQueue.tsx       # Sequential achievement display
+│   │   ├── ConfettiCelebration.tsx    # Confetti animation wrapper
+│   │   ├── StreakCard.tsx             # Streak counter with animations
+│   │   ├── DevTools.tsx               # Draggable dev menu
+│   │   └── ...
+│   ├── screens/         # Screen components
+│   │   ├── HomeScreen.tsx             # Main task list
+│   │   ├── StatsScreen.tsx            # Statistics & achievements
+│   │   └── OnboardingScreen.tsx       # First-time user flow
+│   ├── context/         # React Context providers
+│   │   ├── ThemeContext.tsx           # Theme management
+│   │   ├── LocaleContext.tsx          # Language management
+│   │   ├── TaskContext.tsx            # Task state & persistence
+│   │   └── AchievementContext.tsx     # Achievement & streak logic
 │   ├── navigation/      # React Navigation setup
 │   ├── types/           # TypeScript type definitions
+│   │   ├── task.types.ts              # Task, Category, Priority types
+│   │   └── achievement.types.ts       # Achievement & Streak types
 │   ├── locales/         # i18n translation files (TR/EN)
-│   └── utils/           # Utility functions (helpers)
+│   │   ├── tr.ts                      # Turkish translations
+│   │   ├── en.ts                      # English translations
+│   │   └── i18n.ts                    # i18n configuration
+│   └── utils/           # Utility functions
+│       └── achievementData.ts         # Achievement definitions
 ├── App.tsx              # Main application component
 └── package.json
 ```
@@ -110,28 +146,44 @@ This project is open source and available under the MIT License.
 
 ### ✨ Özellikler
 
+#### Temel Özellikler
 - ✅ **Görev Yönetimi**: Kolayca görev ekleyin, tamamlayın ve silin
 - ⚡ **Enerji Bazlı Organizasyon**: Görevleri enerji seviyesine göre kategorize edin (Yüksek ⚡ / Düşük 💤)
 - �️ **Kategori ve Öncelik Sistemi**: 5 kategori (İş, Kişisel, Sağlık, Alışveriş, Diğer) ve 3 öncelik seviyesi ile görevlerinizi düzenleyin
 - 📊 **İstatistik Paneli**: Grafikler, tamamlanma oranları ve kategori/öncelik dağılımları ile verimliliğinizi takip edin
-- 🗂️ **Sekme Navigasyonu**: Görevler ve İstatistikler ekranları arasında kolay geçiş
-- 🎯 **Akıllı Karşılama**: İlk kullanıcılar için interaktif öğretici
-- �🌓 **Koyu/Açık Tema**: Otomatik geçişli güzel pastel temalar
-- 🌍 **İki Dilli Destek**: Tam Türkçe ve İngilizce dil desteği
-- 💾 **Kalıcı Depolama**: Görevler AsyncStorage ile yerel olarak kaydedilir
-- 🎨 **Modern Arayüz**: Yumuşak animasyonlarla temiz, yuvarlak kartlar
+- 🗂️ **Sekme Navigasyonu**: Kaydırılabilir Material Top Tabs ile kolay ekran geçişi
+- 💾 **Kalıcı Depolama**: AsyncStorage ile tüm veriler yerel olarak saklanır
+
+#### 🎮 Oyunlaştırma & Motivasyon Sistemi
+- 🏆 **12 Benzersiz Başarı**: İlerleme takipli başarılar kilidi açın
+  - 🎯 İlk Görev, ⭐ Görev Ustası (10/50/100), 🔥 Seri Ustası (3/7/30 gün)
+  - 👑 Hafta Savaşçısı, 💎 Kategori Ustası, 🚀 Öncelik Profesyoneli
+  - 🌅 Erken Kuş & 🦉 Gece Kuşu (zamana dayalı başarılar)
+- 🔥 **Seri Sayacı**: Animasyonlu ateş emojisi ile günlük tamamlama serilerini takip edin
+- 🎊 **Başarı Bildirimleri**: Konfeti kutlamalı oyun tarzı bildirim kartları
+- 📊 **İlerleme Takibi**: Tüm başarılar için görsel ilerleme çubukları
+- ⚡ **Sıralı Sistem**: Birden fazla başarı pürüzsüz geçişlerle sırayla gösterilir
+- ✨ **Kutlama Efektleri**: Kilidi açıldığında pulse, glow ve konfeti animasyonları
+
+#### Kullanıcı Deneyimi
+- 🎯 **Akıllı Karşılama**: İlk kullanıcılar için 3 adımlı interaktif öğretici
+-  **Koyu/Açık Tema**: Otomatik geçişli güzel pastel temalar
+- 🌍 **İki Dilli Destek**: Reaktif dil değişimi ile tam Türkçe ve İngilizce
+- 🎨 **Modern Arayüz**: 60fps akıcı animasyonlarla temiz, yuvarlak kartlar
 - 🕒 **Zamana Dayalı Öneriler**: Günün saatine göre akıllı öneriler
 - 📊 **Akıllı Filtreleme**: Görevleri enerji seviyesi veya tamamlanma durumuna göre filtreleyin
+- 🛠️ **Geliştirici Araçları**: Hızlı sıfırlama seçenekleri ile sürüklenebilir buton (geliştirme modu)
 
 ### 🛠 Teknolojiler
 
 - **React Native** ve **Expo SDK 54**
 - Tip güvenliği için **TypeScript**
 - Durum yönetimi için **React Context API**
-- Sekme navigasyonu için **React Navigation**
-- Yerel veri kalıcılığı için **AsyncStorage**
-- Çok dilli destek için **i18n-js**
-- Akıcı animasyonlar için **React Native Reanimated**
+- Kaydırılabilir sekme navigasyonu için **React Navigation** (Material Top Tabs)
+- Yerel veri kalıcılığı için **AsyncStorage** (görevler, başarılar, seriler)
+- Reaktif çok dilli destek için **i18n-js**
+- 60fps akıcı animasyonlar için **React Native Reanimated v4**
+- Kutlama efektleri için **React Native Confetti Cannon**
 - Güzel ikonlar için **Expo Vector Icons**
 - Kod kalitesi için **ESLint & Prettier**
 
@@ -210,11 +262,16 @@ _Ekran görüntüleri eklenecek_
 - [x] ~~Görev önceliklendirme~~
 - [x] ~~Kategori sistemi~~
 - [x] ~~Haftalık istatistikler~~
+- [x] ~~Achievement/Badge sistemi~~
+- [x] ~~Streak takibi~~
+- [x] ~~Konfeti animasyonları~~
+- [ ] Haftalık özet raporu
+- [ ] Haptic feedback (titreşim)
 - [ ] Bildirim desteği
 - [ ] Görev tekrarlama
 - [ ] Veri yedekleme/geri yükleme
-- [ ] Kategori ve öncelik bazlı filtreleme
 - [ ] Görev arama özelliği
+- [ ] Widget desteği
 
 ---
 
