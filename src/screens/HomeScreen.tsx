@@ -19,6 +19,7 @@ import { FilterBar } from '../components/FilterBar';
 import { TaskCard } from '../components/TaskCard';
 import { AddTaskModal } from '../components/AddTaskModal';
 import { EmptyState } from '../components/EmptyState';
+import { DevTools } from '../components/DevTools';
 
 // Enable LayoutAnimation on Android
 if (Platform.OS === 'android') {
@@ -139,6 +140,8 @@ export const HomeScreen: React.FC = () => {
         onClose={() => setIsModalVisible(false)}
         onSave={handleAddTask}
       />
+
+      <DevTools />
     </View>
   );
 };
