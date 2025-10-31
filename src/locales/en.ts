@@ -134,6 +134,7 @@ export const en = {
   tabs: {
     tasks: 'Tasks',
     scheduled: 'Scheduled',
+    calendar: 'Calendar',
     statistics: 'Statistics',
   },
 

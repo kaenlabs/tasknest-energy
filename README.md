@@ -38,9 +38,32 @@
   - ⚡ Energy requirement (High/Low)
   - ⏱️ Estimated duration (15 mins, 30 mins, 1 hour, 2+ hours)
   - 💡 Helpful tips to complete the task efficiently
+  - 📅 **Smart Date Suggestions**: AI recommends optimal day (Today, Tomorrow, Weekend, Next Week)
+  - ⏰ **Smart Time Suggestions**: AI suggests best time based on task type
+    - Exercise → Morning (07:00-09:00)
+    - Work meetings → Focus time (09:00-11:00)
+    - Shopping → Evening (17:00-19:00)
+    - Reading → Evening calm (20:00-22:00)
+  - 💬 **Schedule Reasoning**: Explains why the suggested time is optimal
 - 🌐 **Multilingual AI**: Prompts adapt to your selected language (TR/EN)
 - 🎯 **One-Click Apply**: Apply all AI suggestions instantly with haptic feedback
 - 💡 **Auto-Notes**: AI tips automatically added to task notes with lightbulb emoji
+
+#### 📅 Scheduling & Calendar (V2)
+- 📆 **Monthly Calendar View**: Beautiful grid calendar with task visualization
+- 🗓️ **Day Selection**: Tap any day to view all scheduled tasks
+- 📍 **Task Indicators**: Color-coded dots showing priority levels
+  - 🔴 Red: High priority
+  - 🟡 Yellow: Medium priority
+  - 🔵 Blue: Low priority
+  - ✅ Green: Completed tasks
+- 🎯 **Today Highlight**: Current day highlighted with primary color
+- 📊 **Task Count**: Badge showing number of tasks per day
+- ⬅️➡️ **Month Navigation**: Smooth transitions between months
+- 🎯 **Quick Jump**: "Today" button to quickly return to current month
+- 📱 **Date & Time Pickers**: Native iOS/Android date/time selection
+- 🔄 **Achievement Integration**: Completing tasks from calendar counts for streaks and achievements
+- 🌐 **Weekday Localization**: Weekday names adapt to selected language
 
 #### User Experience
 - 🎯 **Smart Onboarding**: Interactive 4-step tutorial for first-time users
@@ -132,10 +155,14 @@ TaskNest/
 │   │   ├── AchievementQueue.tsx       # Sequential achievement display
 │   │   ├── ConfettiCelebration.tsx    # Confetti animation wrapper
 │   │   ├── StreakCard.tsx             # Streak counter with animations
+│   │   ├── AddTaskModal.tsx           # Task creation/edit with AI
+│   │   ├── TaskDetailModal.tsx        # Full task view
 │   │   ├── DevTools.tsx               # Draggable dev menu
 │   │   └── ...
 │   ├── screens/         # Screen components
 │   │   ├── HomeScreen.tsx             # Main task list
+│   │   ├── CalendarScreen.tsx         # V2 Monthly calendar view
+│   │   ├── ScheduledScreen.tsx        # V1 Scheduled tasks list
 │   │   ├── StatsScreen.tsx            # Statistics & achievements
 │   │   └── OnboardingScreen.tsx       # First-time user flow
 │   ├── context/         # React Context providers
@@ -143,7 +170,10 @@ TaskNest/
 │   │   ├── LocaleContext.tsx          # Language management
 │   │   ├── TaskContext.tsx            # Task state & persistence
 │   │   └── AchievementContext.tsx     # Achievement & streak logic
+│   ├── services/        # External services
+│   │   └── aiService.ts               # Google Gemini AI integration
 │   ├── navigation/      # React Navigation setup
+│   │   └── MainNavigator.tsx          # Material Top Tabs
 │   ├── types/           # TypeScript type definitions
 │   │   ├── task.types.ts              # Task, Category, Priority types
 │   │   └── achievement.types.ts       # Achievement & Streak types
@@ -152,8 +182,10 @@ TaskNest/
 │   │   ├── en.ts                      # English translations
 │   │   └── i18n.ts                    # i18n configuration
 │   └── utils/           # Utility functions
-│       └── achievementData.ts         # Achievement definitions
+│       ├── achievementData.ts         # Achievement definitions
+│       └── haptics.ts                 # Haptic feedback utilities
 ├── App.tsx              # Main application component
+├── .env.example         # Environment variables template
 └── package.json
 ```
 
@@ -204,9 +236,32 @@ This project is open source and available under the MIT License.
   - ⚡ Enerji gereksinimi (Yüksek/Düşük)
   - ⏱️ Tahmini süre (15 dk, 30 dk, 1 saat, 2+ saat)
   - 💡 Görevi verimli tamamlamak için ipuçları
+  - 📅 **Akıllı Tarih Önerileri**: AI en uygun günü önerir (Bugün, Yarın, Hafta Sonu, Gelecek Hafta)
+  - ⏰ **Akıllı Saat Önerileri**: Görev tipine göre ideal saati belirler
+    - Egzersiz → Sabah (07:00-09:00)
+    - İş toplantıları → Odaklanma zamanı (09:00-11:00)
+    - Alışveriş → Akşam (17:00-19:00)
+    - Okuma → Akşam sakinliği (20:00-22:00)
+  - 💬 **Zamanlama Açıklaması**: Önerilen zamanın neden uygun olduğunu açıklar
 - 🌐 **Çok Dilli AI**: Yapay zeka seçtiğiniz dile göre uyum sağlar (TR/EN)
 - 🎯 **Tek Tıkla Uygula**: Tüm AI önerilerini haptik feedback ile anında uygula
 - 💡 **Otomatik Notlar**: AI ipuçları ampul emojisiyle otomatik olarak görev notlarına eklenir
+
+#### 📅 Zamanlama & Takvim (V2)
+- 📆 **Aylık Takvim Görünümü**: Görev görselleştirmeli güzel grid takvim
+- 🗓️ **Gün Seçimi**: Herhangi bir güne dokunarak o günün tüm görevlerini görüntüle
+- 📍 **Görev İndikatörleri**: Öncelik seviyelerini gösteren renkli noktalar
+  - 🔴 Kırmızı: Yüksek öncelik
+  - 🟡 Sarı: Orta öncelik
+  - 🔵 Mavi: Düşük öncelik
+  - ✅ Yeşil: Tamamlanan görevler
+- 🎯 **Bugün Vurgusu**: Güncel gün birincil renkle vurgulanır
+- 📊 **Görev Sayısı**: Günlük görev sayısını gösteren rozet
+- ⬅️➡️ **Ay Navigasyonu**: Aylar arası akıcı geçişler
+- 🎯 **Hızlı Atlama**: Mevcut aya hızlıca dönmek için "Bugün" butonu
+- 📱 **Tarih & Saat Seçiciler**: Native iOS/Android tarih/saat seçimi
+- 🔄 **Başarım Entegrasyonu**: Takvimden görev tamamlama serileri ve başarımları sayar
+- 🌐 **Gün Yerelleştirme**: Gün isimleri seçilen dile uyum sağlar
 
 #### Kullanıcı Deneyimi
 - 🎯 **Akıllı Karşılama**: İlk kullanıcılar için 4 adımlı interaktif öğretici
@@ -316,13 +371,17 @@ _Ekran görüntüleri eklenecek_
 - [x] ~~Task detail view~~
 - [x] ~~Estimated duration field~~
 - [x] ~~Görev düzenleme (edit mode)~~
+- [x] ~~AI saat ve tarih önerileri~~
+- [x] ~~V1 Scheduled Tasks (liste görünümü)~~
+- [x] ~~V2 Calendar View (aylık takvim)~~
 - [ ] Haftalık özet raporu
-- [ ] Bildirim desteği
-- [ ] Görev tekrarlama
+- [ ] Bildirim desteği (zamanlanan görevler için)
+- [ ] Görev tekrarlama (recurring tasks)
 - [ ] Veri yedekleme/geri yükleme
 - [ ] Görev arama özelliği
 - [ ] Widget desteği
 - [ ] Pomodoro timer entegrasyonu
+- [ ] Drag & drop ile görev taşıma (takvimde)
 
 ---
 

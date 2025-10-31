@@ -134,6 +134,7 @@ export const tr = {
   tabs: {
     tasks: 'Görevler',
     scheduled: 'Planlananlar',
+    calendar: 'Takvim',
     statistics: 'İstatistikler',
   },
 
