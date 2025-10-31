@@ -11,9 +11,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTasks } from '../context/TaskContext';
 import { useTheme } from '../context/ThemeContext';
 import { useLocale } from '../context/LocaleContext';
+import { useAchievements } from '../context/AchievementContext';
 import { translate } from '../locales/i18n';
 import { Category, Priority } from '../types/task.types';
 import { getCategoryIcon, getCategoryColor, getPriorityColor } from '../utils/taskHelpers';
+import { AchievementCard } from '../components/AchievementCard';
 
 const { width } = Dimensions.get('window');
 
@@ -21,6 +23,7 @@ export const StatsScreen: React.FC = () => {
   const { theme } = useTheme();
   const { locale } = useLocale(); // This will trigger re-render on language change
   const { tasks } = useTasks();
+  const { achievements } = useAchievements();
 
   const completedTasks = tasks.filter((t) => t.completed);
   const pendingTasks = tasks.filter((t) => !t.completed);
@@ -234,6 +237,30 @@ export const StatsScreen: React.FC = () => {
             })}
           </View>
         </View>
+
+        {/* Achievements */}
+        <View style={[styles.section, { backgroundColor: theme.surface }]}>
+          <View style={styles.achievementHeader}>
+            <Text style={[styles.sectionTitle, { color: theme.text }]}>
+              {translate('achievements.title')}
+            </Text>
+            <Text style={[styles.achievementCount, { color: theme.primary }]}>
+              {achievements.filter((a) => a.unlocked).length} / {achievements.length}
+            </Text>
+          </View>
+
+          <View style={styles.achievementList}>
+            {achievements.slice(0, 6).map((achievement) => (
+              <AchievementCard key={achievement.id} achievement={achievement} />
+            ))}
+          </View>
+
+          {achievements.length > 6 && (
+            <Text style={[styles.moreText, { color: theme.textSecondary }]}>
+              {achievements.length - 6} more achievements...
+            </Text>
+          )}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -384,5 +411,24 @@ const styles = StyleSheet.create({
   priorityCount: {
     fontSize: 20,
     fontWeight: '700',
+  },
+  achievementHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  achievementCount: {
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  achievementList: {
+    marginTop: 8,
+  },
+  moreText: {
+    textAlign: 'center',
+    fontSize: 14,
+    fontWeight: '500',
+    marginTop: 12,
   },
 });
