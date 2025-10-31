@@ -50,7 +50,8 @@
 - 🕒 **Time-Based Suggestions**: Smart recommendations based on time of day
 - 📊 **Smart Filtering**: Filter tasks by energy level or completion status
 - 👆 **Haptic Feedback**: Tactile responses for all interactions (iOS)
-- 📋 **Task Detail View**: Tap any task to view full details, edit, or delete
+- 📋 **Task Management**: Tap any task to view full details, edit with pre-filled data, or delete
+- ✏️ **Smart Edit Mode**: Edit button opens modal with all task data pre-loaded
 - 🛠️ **Dev Tools**: Draggable floating button with quick reset options (dev mode only)
 
 ### 🛠 Technologies
@@ -215,7 +216,8 @@ This project is open source and available under the MIT License.
 - 🕒 **Zamana Dayalı Öneriler**: Günün saatine göre akıllı öneriler
 - 📊 **Akıllı Filtreleme**: Görevleri enerji seviyesi veya tamamlanma durumuna göre filtreleyin
 - 👆 **Haptik Geri Bildirim**: Tüm etkileşimlerde dokunsal tepki (iOS)
-- 📋 **Görev Detay Görünümü**: Herhangi bir göreve dokunarak tam detayları görüntüle, düzenle veya sil
+- 📋 **Görev Yönetimi**: Herhangi bir göreve dokunarak tam detayları görüntüle, önceden doldurulmuş verilerle düzenle veya sil
+- ✏️ **Akıllı Düzenleme**: Düzenle butonu tüm görev verileri yüklü şekilde modalı açar
 - 🛠️ **Geliştirici Araçları**: Hızlı sıfırlama seçenekleri ile sürüklenebilir buton (geliştirme modu)
 
 ### 🛠 Teknolojiler
@@ -289,7 +291,7 @@ TaskNest/
 Geliştiren: Kaan Çelik
 
 - GitHub: [@kaenlabs](https://github.com/kaenlabs)
-- LinkedIn: [LinkedIn linkinizi ekleyin]
+
 
 ### 📝 Lisans
 
@@ -313,13 +315,14 @@ _Ekran görüntüleri eklenecek_
 - [x] ~~AI-powered task suggestions (Google Gemini)~~
 - [x] ~~Task detail view~~
 - [x] ~~Estimated duration field~~
+- [x] ~~Görev düzenleme (edit mode)~~
 - [ ] Haftalık özet raporu
-- [ ] Görev düzenleme (edit mode)
 - [ ] Bildirim desteği
 - [ ] Görev tekrarlama
 - [ ] Veri yedekleme/geri yükleme
 - [ ] Görev arama özelliği
 - [ ] Widget desteği
+- [ ] Pomodoro timer entegrasyonu
 
 ---
 

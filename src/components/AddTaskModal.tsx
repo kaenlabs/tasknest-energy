@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,7 +12,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { EnergyLevel, Priority, Category } from '../types/task.types';
+import { Task, EnergyLevel, Priority, Category } from '../types/task.types';
 import { useTheme } from '../context/ThemeContext';
 import { useLocale } from '../context/LocaleContext';
 import { getTaskSuggestions, TaskSuggestion } from '../services/aiService';
@@ -35,12 +35,14 @@ interface AddTaskModalProps {
     category: Category,
     estimatedDuration?: string
   ) => void;
+  editTask?: Task | null; // Optional task to edit
 }
 
 export const AddTaskModal: React.FC<AddTaskModalProps> = ({
   visible,
   onClose,
   onSave,
+  editTask,
 }) => {
   const { theme } = useTheme();
   const { locale } = useLocale(); // This will trigger re-render on language change
@@ -52,6 +54,27 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
   const [estimatedDuration, setEstimatedDuration] = useState<string>('');
   const [aiSuggestion, setAiSuggestion] = useState<TaskSuggestion | null>(null);
   const [isLoadingAI, setIsLoadingAI] = useState(false);
+
+  // Load task data when editing
+  useEffect(() => {
+    if (editTask && visible) {
+      setTitle(editTask.title);
+      setNote(editTask.note || '');
+      setEnergy(editTask.energy);
+      setPriority(editTask.priority);
+      setCategory(editTask.category);
+      setEstimatedDuration(editTask.estimatedDuration || '');
+    } else if (!visible) {
+      // Reset when closing
+      setTitle('');
+      setNote('');
+      setEnergy('high');
+      setPriority('medium');
+      setCategory('other');
+      setEstimatedDuration('');
+      setAiSuggestion(null);
+    }
+  }, [editTask, visible]);
 
   const handleGetAISuggestions = async () => {
     if (!title.trim()) return;
@@ -140,7 +163,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
         <View style={[styles.modalContent, { backgroundColor: theme.background }]}>
           <View style={styles.modalHeader}>
             <Text style={[styles.modalTitle, { color: theme.text }]}>
-              {translate('addTask')}
+              {editTask ? translate('editTask') : translate('addTask')}
             </Text>
             <TouchableOpacity onPress={handleClose}>
               <Ionicons name="close" size={28} color={theme.text} />

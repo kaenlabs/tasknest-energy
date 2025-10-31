@@ -43,13 +43,14 @@ if (Platform.OS === 'android') {
 export const HomeScreen: React.FC = () => {
   const { theme, colorScheme } = useTheme();
   const { locale } = useLocale(); // This will trigger re-render on language change
-  const { tasks, addTask, deleteTask, toggleTaskCompletion } = useTasks();
+  const { tasks, addTask, deleteTask, toggleTaskCompletion, updateTask } = useTasks();
   const { streak, updateStreak, checkAndUnlockAchievements } = useAchievements();
   const [activeFilter, setActiveFilter] = useState<TaskFilter>('all');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   const animatedValues = useRef<{ [key: string]: Animated.Value }>({}).current;
 
@@ -160,8 +161,17 @@ export const HomeScreen: React.FC = () => {
     estimatedDuration?: string
   ) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    addTask(title, note, energy, priority, category, estimatedDuration);
-    hapticFeedback.light(); // Light feedback for task creation
+    
+    if (editingTask) {
+      // Update existing task
+      updateTask(editingTask.id, title, note, energy, priority, category, estimatedDuration);
+      setEditingTask(null);
+      hapticFeedback.success();
+    } else {
+      // Add new task
+      addTask(title, note, energy, priority, category, estimatedDuration);
+      hapticFeedback.light();
+    }
   };
 
   const handleDeleteTask = (id: string) => {
@@ -264,8 +274,12 @@ export const HomeScreen: React.FC = () => {
 
       <AddTaskModal
         visible={isModalVisible}
-        onClose={() => setIsModalVisible(false)}
+        onClose={() => {
+          setIsModalVisible(false);
+          setEditingTask(null);
+        }}
         onSave={handleAddTask}
+        editTask={editingTask}
       />
 
       <TaskDetailModal
@@ -276,9 +290,12 @@ export const HomeScreen: React.FC = () => {
           setSelectedTask(null);
         }}
         onEdit={() => {
-          // TODO: Implement edit functionality
-          setIsDetailModalVisible(false);
-          hapticFeedback.light();
+          if (selectedTask) {
+            setEditingTask(selectedTask);
+            setIsDetailModalVisible(false);
+            setIsModalVisible(true);
+            hapticFeedback.light();
+          }
         }}
         onDelete={() => {
           if (selectedTask) {

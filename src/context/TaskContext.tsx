@@ -20,7 +20,8 @@ interface TaskContextType {
     note: string,
     energy: EnergyLevel,
     priority: Priority,
-    category: Category
+    category: Category,
+    estimatedDuration?: string
   ) => void;
   isLoading: boolean;
 }
@@ -110,11 +111,14 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     note: string,
     energy: EnergyLevel,
     priority: Priority,
-    category: Category
+    category: Category,
+    estimatedDuration?: string
   ) => {
     setTasks(
       tasks.map((task) =>
-        task.id === id ? { ...task, title, note, energy, priority, category } : task
+        task.id === id 
+          ? { ...task, title, note, energy, priority, category, estimatedDuration } 
+          : task
       )
     );
   };
