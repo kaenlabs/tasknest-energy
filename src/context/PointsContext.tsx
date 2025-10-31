@@ -25,6 +25,13 @@ export interface PointsHistory {
   timestamp: number;
 }
 
+export interface DailyPointsData {
+  date: string; // YYYY-MM-DD
+  earned: number; // Positive points
+  lost: number; // Negative points (absolute value)
+  net: number; // Total (earned - lost)
+}
+
 interface PointsContextType {
   totalPoints: number;
   currentLevel: number;
@@ -36,8 +43,9 @@ interface PointsContextType {
     taskTitle: string,
     points: number,
     action: PointsHistory['action']
-  ) => Promise<void>;
+  ) => Promise<{ leveledUp: boolean; newLevel: number }>;
   getRecentHistory: (limit?: number) => PointsHistory[];
+  getDailyPointsStats: (days?: number) => DailyPointsData[];
   resetPoints: () => Promise<void>;
   isLoading: boolean;
 }
@@ -113,7 +121,9 @@ export const PointsProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     taskTitle: string,
     points: number,
     action: PointsHistory['action']
-  ) => {
+  ): Promise<{ leveledUp: boolean; newLevel: number }> => {
+    const oldLevel = currentLevel;
+    
     const newEntry: PointsHistory = {
       id: Date.now().toString(),
       taskId,
@@ -131,11 +141,55 @@ export const PointsProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       saveHistory(newHistory),
     ]);
 
+    const newLevel = Math.floor(Math.max(0, newTotal) / LEVEL_CONFIG.pointsPerLevel) + 1;
+    const leveledUp = newLevel > oldLevel && points > 0; // Only celebrate on level up with positive points
+
     console.log(`📊 Points updated: ${points > 0 ? '+' : ''}${points} (Total: ${newTotal})`);
+    if (leveledUp) {
+      console.log(`🎊 LEVEL UP! New level: ${newLevel}`);
+    }
+
+    return { leveledUp, newLevel };
   };
 
   const getRecentHistory = (limit: number = 10): PointsHistory[] => {
     return history.slice(-limit).reverse();
+  };
+
+  const getDailyPointsStats = (days: number = 7): DailyPointsData[] => {
+    const stats: { [date: string]: DailyPointsData } = {};
+    const today = new Date();
+    
+    // Initialize last N days
+    for (let i = days - 1; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toISOString().split('T')[0];
+      stats[dateStr] = {
+        date: dateStr,
+        earned: 0,
+        lost: 0,
+        net: 0,
+      };
+    }
+    
+    // Calculate points for each day
+    history.forEach((entry) => {
+      const entryDate = new Date(entry.timestamp);
+      const dateStr = entryDate.toISOString().split('T')[0];
+      
+      if (stats[dateStr]) {
+        if (entry.points > 0) {
+          stats[dateStr].earned += entry.points;
+        } else {
+          stats[dateStr].lost += Math.abs(entry.points);
+        }
+        stats[dateStr].net += entry.points;
+      }
+    });
+    
+    // Convert to array and sort by date
+    return Object.values(stats).sort((a, b) => a.date.localeCompare(b.date));
   };
 
   const resetPoints = async () => {
@@ -162,6 +216,7 @@ export const PointsProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         history,
         addPoints,
         getRecentHistory,
+        getDailyPointsStats,
         resetPoints,
         isLoading,
       }}

@@ -35,6 +35,7 @@ export const NotificationSettingsScreen: React.FC = () => {
     dailyReminderTime: { hour: 9, minute: 0 },
     streakReminder: true,
     achievementNotifications: true,
+    overdueReminders: true,
   });
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [hasPermission, setHasPermission] = useState(false);
@@ -271,6 +272,25 @@ export const NotificationSettingsScreen: React.FC = () => {
                 onValueChange={() => handleToggle('achievementNotifications')}
                 trackColor={{ false: theme.border, true: theme.primary + '40' }}
                 thumbColor={settings.achievementNotifications ? theme.primary : theme.textSecondary}
+              />
+            </View>
+
+            <View style={[styles.divider, { backgroundColor: theme.border }]} />
+
+            <View style={styles.settingRow}>
+              <View style={styles.settingInfo}>
+                <Text style={[styles.settingTitle, { color: theme.text }]}>
+                  ⚠️ Gecikme Bildirimleri
+                </Text>
+                <Text style={[styles.settingDescription, { color: theme.textSecondary }]}>
+                  Görev zamanı geçtiğinde bildirim gönder
+                </Text>
+              </View>
+              <Switch
+                value={settings.overdueReminders}
+                onValueChange={() => handleToggle('overdueReminders')}
+                trackColor={{ false: theme.border, true: theme.primary + '40' }}
+                thumbColor={settings.overdueReminders ? theme.primary : theme.textSecondary}
               />
             </View>
           </View>

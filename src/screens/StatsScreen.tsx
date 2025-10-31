@@ -19,6 +19,7 @@ import { translate } from '../locales/i18n';
 import { Category, Priority } from '../types/task.types';
 import { getCategoryIcon, getCategoryColor, getPriorityColor } from '../utils/taskHelpers';
 import { AchievementCard } from '../components/AchievementCard';
+import { PointsChart } from '../components/PointsChart';
 import { NotificationSettingsScreen } from './NotificationSettingsScreen';
 import { hapticFeedback } from '../utils/haptics';
 
@@ -29,8 +30,11 @@ export const StatsScreen: React.FC = () => {
   const { locale } = useLocale(); // This will trigger re-render on language change
   const { tasks } = useTasks();
   const { achievements } = useAchievements();
-  const { totalPoints, currentLevel, progressToNextLevel } = usePoints();
+  const { totalPoints, currentLevel, progressToNextLevel, getDailyPointsStats } = usePoints();
   const [showNotificationSettings, setShowNotificationSettings] = useState(false);
+  
+  // Get 7-day points data
+  const dailyPointsData = getDailyPointsStats(7);
 
   const completedTasks = tasks.filter((t) => t.completed);
   const pendingTasks = tasks.filter((t) => !t.completed);
@@ -130,6 +134,14 @@ export const StatsScreen: React.FC = () => {
               {Math.round(progressToNextLevel)}% to Level {currentLevel + 1}
             </Text>
           </View>
+        </View>
+
+        {/* Points Chart */}
+        <View style={[styles.chartSection, { backgroundColor: theme.background }]}>
+          <Text style={[styles.sectionTitle, { color: theme.text }]}>
+            📊 Son 7 Gün Puan Değişimi
+          </Text>
+          <PointsChart data={dailyPointsData} />
         </View>
 
         {/* Overview Cards */}
@@ -383,6 +395,10 @@ const styles = StyleSheet.create({
   pointsCard: {
     padding: 20,
     borderRadius: 20,
+    marginBottom: 20,
+  },
+  chartSection: {
+    padding: 20,
     marginBottom: 20,
   },
   pointsHeader: {

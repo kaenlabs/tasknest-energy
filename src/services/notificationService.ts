@@ -12,6 +12,7 @@ export interface NotificationSettings {
   dailyReminderTime: { hour: number; minute: number };
   streakReminder: boolean;
   achievementNotifications: boolean;
+  overdueReminders: boolean;
 }
 
 const DEFAULT_SETTINGS: NotificationSettings = {
@@ -21,6 +22,7 @@ const DEFAULT_SETTINGS: NotificationSettings = {
   dailyReminderTime: { hour: 9, minute: 0 }, // 9:00 AM
   streakReminder: true,
   achievementNotifications: true,
+  overdueReminders: true,
 };
 
 // Configure notification handler
@@ -319,6 +321,52 @@ export const sendTaskCompletionNotification = async (taskTitle: string): Promise
     });
   } catch (error) {
     console.error('Error sending task completion notification:', error);
+  }
+};
+
+/**
+ * Send overdue task notification
+ */
+export const sendOverdueNotification = async (task: Task): Promise<void> => {
+  try {
+    const settings = await getNotificationSettings();
+    if (!settings.enabled || !settings.overdueReminders) {
+      return;
+    }
+    
+    // Calculate how long overdue
+    let timeText = '';
+    if (task.scheduledDate && task.scheduledTime) {
+      const [hours, minutes] = task.scheduledTime.split(':').map(Number);
+      const scheduledDateTime = new Date(task.scheduledDate);
+      scheduledDateTime.setHours(hours, minutes, 0, 0);
+      
+      const now = Date.now();
+      const overdueDuration = now - scheduledDateTime.getTime();
+      const overdueHours = Math.floor(overdueDuration / (1000 * 60 * 60));
+      const overdueMinutes = Math.floor((overdueDuration % (1000 * 60 * 60)) / (1000 * 60));
+      
+      if (overdueHours > 0) {
+        timeText = ` (${overdueHours} saat gecikmiş)`;
+      } else if (overdueMinutes > 0) {
+        timeText = ` (${overdueMinutes} dakika gecikmiş)`;
+      }
+    }
+    
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: '⚠️ Görev Gecikti!',
+        body: `"${task.title}" görevi zamanında tamamlanmadı${timeText}`,
+        data: { taskId: task.id, type: 'task_overdue' },
+        sound: true,
+        priority: Notifications.AndroidNotificationPriority.HIGH,
+      },
+      trigger: null, // Send immediately
+    });
+    
+    console.log('📲 Overdue notification sent for:', task.title);
+  } catch (error) {
+    console.error('Error sending overdue notification:', error);
   }
 };
 

@@ -14,6 +14,8 @@ import { useTheme } from '../context/ThemeContext';
 import { translate } from '../locales/i18n';
 import { Task } from '../types/task.types';
 import { TaskCard } from '../components/TaskCard';
+import { PointsFloatingNotification } from '../components/PointsFloatingNotification';
+import { LevelUpCelebration } from '../components/LevelUpCelebration';
 import { hapticFeedback } from '../utils/haptics';
 import { useAchievements } from '../context/AchievementContext';
 import { usePoints, POINTS_CONFIG } from '../context/PointsContext';
@@ -35,6 +37,13 @@ export const CalendarScreen: React.FC = () => {
   const { addPoints } = usePoints();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  
+  // Points animation states
+  const [pointsNotification, setPointsNotification] = useState<{
+    points: number;
+    action: 'complete' | 'complete_on_time' | 'skip' | 'fail' | 'auto_fail';
+  } | null>(null);
+  const [levelUpData, setLevelUpData] = useState<{ level: number } | null>(null);
 
   // Helper function to get tasks for a specific date
   const getTasksForDate = (date: Date): Task[] => {
@@ -150,7 +159,19 @@ export const CalendarScreen: React.FC = () => {
         }
       }
       
-      await addPoints(task.id, task.title, points, action);
+      // Add points and check for level up
+      const result = await addPoints(task.id, task.title, points, action);
+      
+      // Show points notification
+      setPointsNotification({ points, action });
+      
+      // Show level up celebration if leveled up
+      if (result.leveledUp) {
+        setTimeout(() => {
+          setLevelUpData({ level: result.newLevel });
+        }, 2000);
+      }
+      
       await updateStreak();
       
       setTimeout(async () => {
@@ -315,6 +336,23 @@ export const CalendarScreen: React.FC = () => {
           </View>
         )}
       </ScrollView>
+
+      {/* Points Floating Notification */}
+      {pointsNotification && (
+        <PointsFloatingNotification
+          points={pointsNotification.points}
+          action={pointsNotification.action}
+          onAnimationComplete={() => setPointsNotification(null)}
+        />
+      )}
+
+      {/* Level Up Celebration */}
+      {levelUpData && (
+        <LevelUpCelebration
+          level={levelUpData.level}
+          onAnimationComplete={() => setLevelUpData(null)}
+        />
+      )}
     </SafeAreaView>
   );
 };

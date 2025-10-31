@@ -42,6 +42,13 @@
 - 📈 **Live Progress Bar**: Visual progress indicator with gold accents
 - 🏆 **Stats Display**: Total points, current level, and progress percentage
 - 📊 **Points History**: Track all point changes with action types
+- 🎨 **Visual Enhancements (Phase 2)**:
+  - ✨ **Floating Point Notifications**: Animated +10/+15/-5/-10 notifications with slide-up effect
+  - 🎊 **Level Up Celebration**: Full-screen confetti (200 particles) with rotating gold trophy
+  - ⚠️ **Overdue Notifications**: Instant alerts when tasks become overdue with time-passed calculation
+  - 📊 **7-Day Points Chart**: Dual-color bar graph showing earned (green) vs lost (red) points
+  - 🎯 **Smart Animations**: 2-second delay between point notification and level-up celebration
+  - 📈 **Daily Statistics**: Summary stats with total earned, lost, and net points
 
 #### 🚨 Overdue Task Management (New!)
 - ⏰ **Automatic Overdue Detection**: Tasks automatically become overdue after scheduled time
@@ -203,6 +210,9 @@ TaskNest/
 │   │   ├── AddTaskModal.tsx           # Task creation/edit with AI
 │   │   ├── TaskDetailModal.tsx        # Full task view
 │   │   ├── OverdueActionCard.tsx      # Overdue task action buttons
+│   │   ├── PointsFloatingNotification.tsx # Animated point change notifications
+│   │   ├── LevelUpCelebration.tsx     # Level-up confetti celebration
+│   │   ├── PointsChart.tsx            # 7-day points bar chart
 │   │   ├── SplashScreen.tsx           # Animated KΛEN Labs logo
 │   │   ├── DevTools.tsx               # Draggable dev menu
 │   │   └── ...
@@ -290,6 +300,13 @@ This project is open source and available under the MIT License.
 - 📈 **Canlı İlerleme Çubuğu**: Altın vurgulu görsel ilerleme göstergesi
 - 🏆 **İstatistik Ekranı**: Toplam puan, mevcut seviye ve ilerleme yüzdesi
 - 📊 **Puan Geçmişi**: Tüm puan değişikliklerini aksiyon tipleriyle takip edin
+- 🎨 **Görsel İyileştirmeler (Faz 2)**:
+  - ✨ **Yüzen Puan Bildirimleri**: Yukarı kayma efektli animasyonlu +10/+15/-5/-10 bildirimleri
+  - 🎊 **Seviye Atlama Kutlaması**: 360° dönen altın kupa ile tam ekran konfeti (200 parçacık)
+  - ⚠️ **Gecikme Bildirimleri**: Görevler geciktiğinde geçen süreyle birlikte anlık uyarılar
+  - 📊 **7 Günlük Puan Grafiği**: Kazanılan (yeşil) ve kaybedilen (kırmızı) puanları gösteren çift renkli çubuk grafik
+  - 🎯 **Akıllı Animasyonlar**: Puan bildirimi ile seviye atlama kutlaması arasında 2 saniyelik gecikme
+  - 📈 **Günlük İstatistikler**: Toplam kazanılan, kaybedilen ve net puan özeti
 
 #### 🚨 Gecikmiş Görev Yönetimi (Yeni!)
 - ⏰ **Otomatik Gecikme Algılama**: Görevler zamanlanan saatten sonra otomatik gecikir
@@ -476,6 +493,9 @@ _Ekran görüntüleri eklenecek_
 - [x] ~~Puan & seviye sistemi~~
 - [x] ~~Gecikmiş görev yönetimi~~
 - [x] ~~Açılış animasyonları (splash & onboarding)~~
+- [x] ~~Puan animasyonları (floating notifications & level-up celebration)~~
+- [x] ~~Gecikme bildirimleri (overdue alerts)~~
+- [x] ~~7 günlük puan grafiği~~
 - [ ] Haftalık özet raporu
 - [ ] Görev tekrarlama (recurring tasks)
 - [ ] Veri yedekleme/geri yükleme

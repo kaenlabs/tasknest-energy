@@ -16,6 +16,8 @@ import { translate } from '../locales/i18n';
 import { Task } from '../types/task.types';
 import { TaskCard } from '../components/TaskCard';
 import { EmptyState } from '../components/EmptyState';
+import { PointsFloatingNotification } from '../components/PointsFloatingNotification';
+import { LevelUpCelebration } from '../components/LevelUpCelebration';
 import { hapticFeedback } from '../utils/haptics';
 
 interface TaskSection {
@@ -29,6 +31,13 @@ export const ScheduledScreen: React.FC = () => {
   const { tasks, toggleTaskCompletion, deleteTask } = useTasks();
   const { streak, updateStreak, checkAndUnlockAchievements } = useAchievements();
   const { addPoints } = usePoints();
+  
+  // Points animation states
+  const [pointsNotification, setPointsNotification] = useState<{
+    points: number;
+    action: 'complete' | 'complete_on_time' | 'skip' | 'fail' | 'auto_fail';
+  } | null>(null);
+  const [levelUpData, setLevelUpData] = useState<{ level: number } | null>(null);
 
   const getScheduledTasks = (): TaskSection[] => {
     const scheduledTasks = tasks.filter(task => task.isScheduled && task.scheduledDate);
@@ -110,7 +119,19 @@ export const ScheduledScreen: React.FC = () => {
         }
       }
       
-      await addPoints(task.id, task.title, points, action);
+      // Add points and check for level up
+      const result = await addPoints(task.id, task.title, points, action);
+      
+      // Show points notification
+      setPointsNotification({ points, action });
+      
+      // Show level up celebration if leveled up
+      if (result.leveledUp) {
+        setTimeout(() => {
+          setLevelUpData({ level: result.newLevel });
+        }, 2000);
+      }
+      
       await updateStreak();
       
       // Check achievements after a small delay to get updated tasks
@@ -259,6 +280,23 @@ export const ScheduledScreen: React.FC = () => {
         showsVerticalScrollIndicator={false}
         stickySectionHeadersEnabled={false}
       />
+
+      {/* Points Floating Notification */}
+      {pointsNotification && (
+        <PointsFloatingNotification
+          points={pointsNotification.points}
+          action={pointsNotification.action}
+          onAnimationComplete={() => setPointsNotification(null)}
+        />
+      )}
+
+      {/* Level Up Celebration */}
+      {levelUpData && (
+        <LevelUpCelebration
+          level={levelUpData.level}
+          onAnimationComplete={() => setLevelUpData(null)}
+        />
+      )}
     </View>
   );
 };

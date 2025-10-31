@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Task, EnergyLevel, Priority, Category, TaskStatus } from '../types/task.types';
-import { scheduleTaskNotification, scheduleDailyReminder } from '../services/notificationService';
+import { scheduleTaskNotification, scheduleDailyReminder, sendOverdueNotification } from '../services/notificationService';
 
 interface TaskContextType {
   tasks: Task[];
@@ -292,7 +292,14 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
           // Just mark as overdue if not already
           if (task.status === 'active') {
+            console.log(`⚠️ Task became overdue: ${task.title}`);
             hasChanges = true;
+            
+            // Send overdue notification
+            sendOverdueNotification(task).catch(err => {
+              console.error('Failed to send overdue notification:', err);
+            });
+            
             return {
               ...task,
               status: 'overdue' as TaskStatus,
