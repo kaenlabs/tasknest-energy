@@ -14,7 +14,11 @@
 
 - ✅ **Task Management**: Add, complete, and delete tasks with ease
 - ⚡ **Energy-Based Organization**: Categorize tasks by energy level (High ⚡ / Low 💤)
-- 🌓 **Dark/Light Theme**: Beautiful pastel themes with automatic switching
+- �️ **Categories & Priorities**: Organize tasks with 5 categories (Work, Personal, Health, Shopping, Other) and 3 priority levels
+- 📊 **Statistics Dashboard**: Track your productivity with charts, completion rates, and category/priority breakdowns
+- 🗂️ **Tab Navigation**: Easy switching between Tasks and Statistics screens
+- 🎯 **Smart Onboarding**: Interactive tutorial for first-time users
+- �🌓 **Dark/Light Theme**: Beautiful pastel themes with automatic switching
 - 🌍 **Bilingual Support**: Full Turkish and English language support
 - 💾 **Persistent Storage**: Tasks are saved locally with AsyncStorage
 - 🎨 **Modern UI**: Clean, rounded cards with smooth animations
@@ -26,8 +30,10 @@
 - **React Native** with **Expo SDK 54**
 - **TypeScript** for type safety
 - **React Context API** for state management
+- **React Navigation** for tab navigation
 - **AsyncStorage** for local data persistence
 - **i18n-js** for internationalization
+- **React Native Reanimated** for smooth animations
 - **Expo Vector Icons** for beautiful icons
 - **ESLint & Prettier** for code quality
 
@@ -73,11 +79,12 @@ npm run web
 TaskNest/
 ├── src/
 │   ├── components/      # Reusable UI components
-│   ├── screens/         # Screen components
-│   ├── context/         # React Context providers
+│   ├── screens/         # Screen components (Home, Stats, Onboarding)
+│   ├── context/         # React Context providers (Theme, Locale, Task)
+│   ├── navigation/      # React Navigation setup
 │   ├── types/           # TypeScript type definitions
-│   ├── locales/         # i18n translation files
-│   └── utils/           # Utility functions
+│   ├── locales/         # i18n translation files (TR/EN)
+│   └── utils/           # Utility functions (helpers)
 ├── App.tsx              # Main application component
 └── package.json
 ```
@@ -105,7 +112,11 @@ This project is open source and available under the MIT License.
 
 - ✅ **Görev Yönetimi**: Kolayca görev ekleyin, tamamlayın ve silin
 - ⚡ **Enerji Bazlı Organizasyon**: Görevleri enerji seviyesine göre kategorize edin (Yüksek ⚡ / Düşük 💤)
-- 🌓 **Koyu/Açık Tema**: Otomatik geçişli güzel pastel temalar
+- �️ **Kategori ve Öncelik Sistemi**: 5 kategori (İş, Kişisel, Sağlık, Alışveriş, Diğer) ve 3 öncelik seviyesi ile görevlerinizi düzenleyin
+- 📊 **İstatistik Paneli**: Grafikler, tamamlanma oranları ve kategori/öncelik dağılımları ile verimliliğinizi takip edin
+- 🗂️ **Sekme Navigasyonu**: Görevler ve İstatistikler ekranları arasında kolay geçiş
+- 🎯 **Akıllı Karşılama**: İlk kullanıcılar için interaktif öğretici
+- �🌓 **Koyu/Açık Tema**: Otomatik geçişli güzel pastel temalar
 - 🌍 **İki Dilli Destek**: Tam Türkçe ve İngilizce dil desteği
 - 💾 **Kalıcı Depolama**: Görevler AsyncStorage ile yerel olarak kaydedilir
 - 🎨 **Modern Arayüz**: Yumuşak animasyonlarla temiz, yuvarlak kartlar
@@ -117,8 +128,10 @@ This project is open source and available under the MIT License.
 - **React Native** ve **Expo SDK 54**
 - Tip güvenliği için **TypeScript**
 - Durum yönetimi için **React Context API**
+- Sekme navigasyonu için **React Navigation**
 - Yerel veri kalıcılığı için **AsyncStorage**
 - Çok dilli destek için **i18n-js**
+- Akıcı animasyonlar için **React Native Reanimated**
 - Güzel ikonlar için **Expo Vector Icons**
 - Kod kalitesi için **ESLint & Prettier**
 
@@ -164,10 +177,11 @@ npm run web
 TaskNest/
 ├── src/
 │   ├── components/      # Yeniden kullanılabilir UI bileşenleri
-│   ├── screens/         # Ekran bileşenleri
-│   ├── context/         # React Context sağlayıcıları
+│   ├── screens/         # Ekran bileşenleri (Ana Sayfa, İstatistikler, Karşılama)
+│   ├── context/         # React Context sağlayıcıları (Tema, Dil, Görev)
+│   ├── navigation/      # React Navigation yapılandırması
 │   ├── types/           # TypeScript tip tanımlamaları
-│   ├── locales/         # i18n çeviri dosyaları
+│   ├── locales/         # i18n çeviri dosyaları (TR/EN)
 │   └── utils/           # Yardımcı fonksiyonlar
 ├── App.tsx              # Ana uygulama bileşeni
 └── package.json
@@ -193,12 +207,14 @@ _Ekran görüntüleri eklenecek_
 
 ### 🔮 Gelecek Özellikler
 
-- [ ] Görev önceliklendirme
-- [ ] Kategori sistemi
-- [ ] Haftalık istatistikler
+- [x] ~~Görev önceliklendirme~~
+- [x] ~~Kategori sistemi~~
+- [x] ~~Haftalık istatistikler~~
 - [ ] Bildirim desteği
 - [ ] Görev tekrarlama
 - [ ] Veri yedekleme/geri yükleme
+- [ ] Kategori ve öncelik bazlı filtreleme
+- [ ] Görev arama özelliği
 
 ---
 
