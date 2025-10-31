@@ -1,13 +1,26 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Task, EnergyLevel } from '../types/task.types';
+import { Task, EnergyLevel, Priority, Category } from '../types/task.types';
 
 interface TaskContextType {
   tasks: Task[];
-  addTask: (title: string, note: string, energy: EnergyLevel) => void;
+  addTask: (
+    title: string,
+    note: string,
+    energy: EnergyLevel,
+    priority: Priority,
+    category: Category
+  ) => void;
   deleteTask: (id: string) => void;
   toggleTaskCompletion: (id: string) => void;
-  updateTask: (id: string, title: string, note: string, energy: EnergyLevel) => void;
+  updateTask: (
+    id: string,
+    title: string,
+    note: string,
+    energy: EnergyLevel,
+    priority: Priority,
+    category: Category
+  ) => void;
   isLoading: boolean;
 }
 
@@ -50,12 +63,20 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const addTask = (title: string, note: string, energy: EnergyLevel) => {
+  const addTask = (
+    title: string,
+    note: string,
+    energy: EnergyLevel,
+    priority: Priority = 'medium',
+    category: Category = 'other'
+  ) => {
     const newTask: Task = {
       id: Date.now().toString(),
       title,
       note,
       energy,
+      priority,
+      category,
       completed: false,
       createdAt: Date.now(),
     };
@@ -69,15 +90,28 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const toggleTaskCompletion = (id: string) => {
     setTasks(
       tasks.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
+        task.id === id
+          ? {
+              ...task,
+              completed: !task.completed,
+              completedAt: !task.completed ? Date.now() : undefined,
+            }
+          : task
       )
     );
   };
 
-  const updateTask = (id: string, title: string, note: string, energy: EnergyLevel) => {
+  const updateTask = (
+    id: string,
+    title: string,
+    note: string,
+    energy: EnergyLevel,
+    priority: Priority,
+    category: Category
+  ) => {
     setTasks(
       tasks.map((task) =>
-        task.id === id ? { ...task, title, note, energy } : task
+        task.id === id ? { ...task, title, note, energy, priority, category } : task
       )
     );
   };

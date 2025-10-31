@@ -49,10 +49,31 @@ export const tr = {
   turkish: 'Türkçe',
   english: 'English',
 
+  // Categories
+  categories: {
+    work: 'İş',
+    personal: 'Kişisel',
+    health: 'Sağlık',
+    shopping: 'Alışveriş',
+    other: 'Diğer',
+  },
+
+  // Priority
+  priority: {
+    high: 'Yüksek',
+    medium: 'Orta',
+    low: 'Düşük',
+    label: 'Öncelik',
+  },
+
   // Task Stats
   totalTasks: 'Toplam',
   completedCount: 'Tamamlanan',
   pendingCount: 'Bekleyen',
+  completionRate: 'Tamamlanma Oranı',
+  thisWeek: 'Bu Hafta',
+  statistics: 'İstatistikler',
+  tasks: 'Görevler',
 
   // Tutorial
   tutorial: {

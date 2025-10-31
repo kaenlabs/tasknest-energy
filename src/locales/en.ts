@@ -49,10 +49,31 @@ export const en = {
   turkish: 'Türkçe',
   english: 'English',
 
+  // Categories
+  categories: {
+    work: 'Work',
+    personal: 'Personal',
+    health: 'Health',
+    shopping: 'Shopping',
+    other: 'Other',
+  },
+
+  // Priority
+  priority: {
+    high: 'High',
+    medium: 'Medium',
+    low: 'Low',
+    label: 'Priority',
+  },
+
   // Task Stats
   totalTasks: 'Total',
   completedCount: 'Completed',
   pendingCount: 'Pending',
+  completionRate: 'Completion Rate',
+  thisWeek: 'This Week',
+  statistics: 'Statistics',
+  tasks: 'Tasks',
 
   // Tutorial
   tutorial: {
