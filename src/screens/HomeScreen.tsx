@@ -17,6 +17,7 @@ import { useTasks } from '../context/TaskContext';
 import { useTheme } from '../context/ThemeContext';
 import { useLocale } from '../context/LocaleContext';
 import { useAchievements } from '../context/AchievementContext';
+import { usePoints, POINTS_CONFIG } from '../context/PointsContext';
 import { TaskFilter, Task } from '../types/task.types';
 import { Header } from '../components/Header';
 import { FilterBar } from '../components/FilterBar';
@@ -45,6 +46,7 @@ export const HomeScreen: React.FC = () => {
   const { locale } = useLocale(); // This will trigger re-render on language change
   const { tasks, addTask, deleteTask, toggleTaskCompletion, updateTask } = useTasks();
   const { streak, updateStreak, checkAndUnlockAchievements } = useAchievements();
+  const { addPoints } = usePoints();
   const [activeFilter, setActiveFilter] = useState<TaskFilter>('all');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
@@ -203,6 +205,24 @@ export const HomeScreen: React.FC = () => {
       // Completing a task - success haptic!
       hapticFeedback.medium();
       
+      // Calculate points based on task timing
+      let points = POINTS_CONFIG.COMPLETE_NORMAL;
+      let action: 'complete' | 'complete_on_time' = 'complete';
+      
+      // Check if task has schedule and completed on time
+      if (task.scheduledDate && task.scheduledTime) {
+        const [hours, minutes] = task.scheduledTime.split(':').map(Number);
+        const scheduledDateTime = new Date(task.scheduledDate);
+        scheduledDateTime.setHours(hours, minutes, 0, 0);
+        
+        if (Date.now() < scheduledDateTime.getTime()) {
+          // Completed before scheduled time - bonus!
+          points = POINTS_CONFIG.COMPLETE_ON_TIME;
+          action = 'complete_on_time';
+        }
+      }
+      
+      await addPoints(task.id, task.title, points, action);
       await updateStreak();
       
       // Check achievements after a small delay to get updated tasks

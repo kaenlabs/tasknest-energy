@@ -30,6 +30,8 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onFinish }) 
   const [currentPage, setCurrentPage] = useState(0);
   const pagerRef = useRef<PagerView>(null);
   const scaleAnim = useRef(new Animated.Value(1)).current;
+  const slideScaleAnim = useRef(new Animated.Value(1)).current;
+  const slideOpacityAnim = useRef(new Animated.Value(1)).current;
 
   const slides: SlideData[] = [
     {
@@ -58,6 +60,8 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onFinish }) 
     },
   ];
 
+
+
   const handleNext = () => {
     if (currentPage < slides.length - 1) {
       pagerRef.current?.setPage(currentPage + 1);
@@ -68,6 +72,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onFinish }) 
 
   const handleGetStarted = () => {
     Animated.sequence([
+      // Button press animation
       Animated.timing(scaleAnim, {
         toValue: 0.95,
         duration: 100,
@@ -78,13 +83,35 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onFinish }) 
         duration: 100,
         useNativeDriver: true,
       }),
+      // Exit animation - zoom out and fade
+      Animated.parallel([
+        Animated.timing(slideScaleAnim, {
+          toValue: 1.2,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideOpacityAnim, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+      ]),
     ]).start(() => {
       onFinish();
     });
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
+    <Animated.View 
+      style={[
+        styles.container, 
+        { 
+          backgroundColor: theme.background,
+          opacity: slideOpacityAnim,
+          transform: [{ scale: slideScaleAnim }],
+        }
+      ]}
+    >
       <TouchableOpacity
         style={styles.skipButton}
         onPress={onFinish}
@@ -103,14 +130,16 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onFinish }) 
       >
         {slides.map((slide, index) => (
           <View key={index} style={styles.slide}>
-            <View style={[styles.iconContainer, { backgroundColor: slide.color + '20' }]}>
-              <Ionicons name={slide.icon} size={80} color={slide.color} />
-            </View>
+            <View style={styles.slideContent}>
+              <View style={[styles.iconContainer, { backgroundColor: slide.color + '20' }]}>
+                <Ionicons name={slide.icon} size={80} color={slide.color} />
+              </View>
 
-            <Text style={[styles.title, { color: theme.text }]}>{slide.title}</Text>
-            <Text style={[styles.description, { color: theme.textSecondary }]}>
-              {slide.description}
-            </Text>
+              <Text style={[styles.title, { color: theme.text }]}>{slide.title}</Text>
+              <Text style={[styles.description, { color: theme.textSecondary }]}>
+                {slide.description}
+              </Text>
+            </View>
           </View>
         ))}
       </PagerView>
@@ -147,7 +176,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onFinish }) 
           </TouchableOpacity>
         </Animated.View>
       </View>
-    </View>
+    </Animated.View>
   );
 };
 
@@ -174,6 +203,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 40,
+  },
+  slideContent: {
+    alignItems: 'center',
   },
   iconContainer: {
     width: 160,

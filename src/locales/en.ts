@@ -244,4 +244,23 @@ export const en = {
     applySchedule: 'Apply Schedule',
     scheduleRecommendation: 'AI Schedule Recommendation',
   },
+
+  // Overdue System
+  overdue: 'Overdue',
+  skip: 'Skip',
+  failed: 'Failed',
+  skip_task: 'Skip Task',
+  mark_as_failed: 'Mark as Failed',
+  skip_task_confirmation: 'Are you sure you want to skip this task? You will lose -5 points.',
+  fail_task_confirmation: 'Are you sure you want to mark this task as failed? You will lose -10 points and your streak will break.',
+  mark_failed: 'Mark Failed',
+  points: 'Points',
+  day: 'day',
+  days: 'days',
+  hour: 'hour',
+  hours: 'hours',
+  minute: 'minute',
+  minutes: 'minutes',
+  just_now: 'just now',
+  ok: 'OK',
 };

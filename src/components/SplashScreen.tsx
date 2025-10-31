@@ -14,6 +14,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
   const scaleAnim = useRef(new Animated.Value(0.3)).current;
   const labsAnim = useRef(new Animated.Value(0)).current;
   const labsSlideAnim = useRef(new Animated.Value(20)).current;
+  const exitSlideAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     // Sequence animation
@@ -49,16 +50,21 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
       ]),
       // 4. Hold for a moment
       Animated.delay(1200),
-      // 5. Fade out everything
+      // 5. Slide up and fade out everything
       Animated.parallel([
         Animated.timing(fadeAnim, {
           toValue: 0,
-          duration: 500,
+          duration: 600,
           useNativeDriver: true,
         }),
         Animated.timing(labsAnim, {
           toValue: 0,
-          duration: 500,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+        Animated.timing(exitSlideAnim, {
+          toValue: -100,
+          duration: 600,
           useNativeDriver: true,
         }),
       ]),
@@ -74,7 +80,10 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
           styles.logoContainer,
           {
             opacity: fadeAnim,
-            transform: [{ scale: scaleAnim }],
+            transform: [
+              { scale: scaleAnim },
+              { translateY: exitSlideAnim },
+            ],
           },
         ]}
       >
@@ -86,7 +95,9 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
           styles.labsContainer,
           {
             opacity: labsAnim,
-            transform: [{ translateY: labsSlideAnim }],
+            transform: [
+              { translateY: Animated.add(labsSlideAnim, exitSlideAnim) },
+            ],
           },
         ]}
       >
@@ -99,6 +110,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
           styles.dotsContainer,
           {
             opacity: fadeAnim,
+            transform: [{ translateY: exitSlideAnim }],
           },
         ]}
       >

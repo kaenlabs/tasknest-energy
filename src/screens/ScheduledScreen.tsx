@@ -11,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTasks } from '../context/TaskContext';
 import { useTheme } from '../context/ThemeContext';
 import { useAchievements } from '../context/AchievementContext';
+import { usePoints, POINTS_CONFIG } from '../context/PointsContext';
 import { translate } from '../locales/i18n';
 import { Task } from '../types/task.types';
 import { TaskCard } from '../components/TaskCard';
@@ -27,6 +28,7 @@ export const ScheduledScreen: React.FC = () => {
   const { theme } = useTheme();
   const { tasks, toggleTaskCompletion, deleteTask } = useTasks();
   const { streak, updateStreak, checkAndUnlockAchievements } = useAchievements();
+  const { addPoints } = usePoints();
 
   const getScheduledTasks = (): TaskSection[] => {
     const scheduledTasks = tasks.filter(task => task.isScheduled && task.scheduledDate);
@@ -91,6 +93,24 @@ export const ScheduledScreen: React.FC = () => {
       // Completing a task - success haptic!
       hapticFeedback.medium();
       
+      // Calculate points based on task timing
+      let points = POINTS_CONFIG.COMPLETE_NORMAL;
+      let action: 'complete' | 'complete_on_time' = 'complete';
+      
+      // Check if task has schedule and completed on time
+      if (task.scheduledDate && task.scheduledTime) {
+        const [hours, minutes] = task.scheduledTime.split(':').map(Number);
+        const scheduledDateTime = new Date(task.scheduledDate);
+        scheduledDateTime.setHours(hours, minutes, 0, 0);
+        
+        if (Date.now() < scheduledDateTime.getTime()) {
+          // Completed before scheduled time - bonus!
+          points = POINTS_CONFIG.COMPLETE_ON_TIME;
+          action = 'complete_on_time';
+        }
+      }
+      
+      await addPoints(task.id, task.title, points, action);
       await updateStreak();
       
       // Check achievements after a small delay to get updated tasks

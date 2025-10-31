@@ -244,4 +244,23 @@ export const tr = {
     applySchedule: 'Zamanlamayı Uygula',
     scheduleRecommendation: 'AI Zamanlama Önerisi',
   },
+
+  // Overdue System
+  overdue: 'Zamanı Geçti',
+  skip: 'Atla',
+  failed: 'Başarısız',
+  skip_task: 'Görevi Atla',
+  mark_as_failed: 'Başarısız Olarak İşaretle',
+  skip_task_confirmation: 'Bu görevi atlamak istediğinize emin misiniz? -5 puan kaybedeceksiniz.',
+  fail_task_confirmation: 'Bu görevi başarısız olarak işaretlemek istediğinize emin misiniz? -10 puan kaybedeceksiniz ve seriniz kırılacak.',
+  mark_failed: 'Başarısız İşaretle',
+  points: 'Puan',
+  day: 'gün',
+  days: 'gün',
+  hour: 'saat',
+  hours: 'saat',
+  minute: 'dakika',
+  minutes: 'dakika',
+  just_now: 'az önce',
+  ok: 'Tamam',
 };

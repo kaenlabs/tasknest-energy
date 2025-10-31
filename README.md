@@ -31,6 +31,32 @@
 - ⚡ **Queue System**: Multiple achievements shown sequentially with smooth transitions
 - ✨ **Celebration Effects**: Pulse, glow, and confetti animations on unlock
 
+#### ⭐ Points & Level System (New!)
+- 🎯 **Point System**: Earn points for completing tasks
+  - ⚡ **+15 points** for early completion (before scheduled time)
+  - ✅ **+10 points** for normal completion
+  - ⏭️ **-5 points** for skipping tasks
+  - ❌ **-10 points** for marking as failed
+  - ⚠️ **-15 points** for auto-failed tasks (24h overdue)
+- 🏅 **Level System**: Progress through levels (100 points per level, max 50)
+- 📈 **Live Progress Bar**: Visual progress indicator with gold accents
+- 🏆 **Stats Display**: Total points, current level, and progress percentage
+- 📊 **Points History**: Track all point changes with action types
+
+#### 🚨 Overdue Task Management (New!)
+- ⏰ **Automatic Overdue Detection**: Tasks automatically become overdue after scheduled time
+- 🔴 **Visual Indicators**: Red border (6px) and alert badge on overdue tasks
+- ⚡ **Quick Actions**: Three action buttons for overdue tasks:
+  - ✅ **Complete** (+10 points): Mark task as done
+  - ⏭️ **Skip** (-5 points): Skip task with confirmation
+  - ❌ **Fail** (-10 points): Mark as failed with streak warning
+- ⏱️ **Time Tracking**: Shows how long the task has been overdue (days/hours/minutes)
+- 🔄 **Auto-Fail System**: Tasks automatically fail after 24 hours (-15 points)
+- 🔔 **Real-time Updates**: Checks for overdue tasks every 60 seconds
+- 🎯 **Haptic Feedback**: Tactile responses for all overdue actions
+- 📱 **Confirmation Alerts**: Safety confirmations for skip/fail actions
+- 🔥 **Streak Protection**: Warns before actions that might break your streak
+
 #### 🤖 AI-Powered Features (New!)
 - ✨ **Smart Task Suggestions**: Google Gemini AI analyzes your task titles and suggests:
   - 📁 Best category (Work, Personal, Health, Shopping, Other)
@@ -80,7 +106,10 @@
 - 🌐 **Localized Messages**: All notifications respect your language selection
 
 #### User Experience
-- 🎯 **Smart Onboarding**: Interactive 4-step tutorial for first-time users
+- 🎯 **Smart Onboarding**: Interactive 4-step tutorial with smooth animations
+  - 🎨 **Splash Screen**: KΛEN Labs logo with fade/scale animations
+  - ✨ **Animated Transitions**: Smooth slide & fade between splash → onboarding → app
+  - 🎬 **Exit Animations**: Zoom out & fade effects on completion
 - 🌙 **Dark/Light Theme**: Beautiful pastel themes with automatic switching
 - 🌍 **Bilingual Support**: Full Turkish and English with reactive language switching
 - 🎨 **Modern UI**: Clean, rounded cards with 60fps smooth animations
@@ -173,6 +202,8 @@ TaskNest/
 │   │   ├── StreakCard.tsx             # Streak counter with animations
 │   │   ├── AddTaskModal.tsx           # Task creation/edit with AI
 │   │   ├── TaskDetailModal.tsx        # Full task view
+│   │   ├── OverdueActionCard.tsx      # Overdue task action buttons
+│   │   ├── SplashScreen.tsx           # Animated KΛEN Labs logo
 │   │   ├── DevTools.tsx               # Draggable dev menu
 │   │   └── ...
 │   ├── screens/         # Screen components
@@ -185,7 +216,8 @@ TaskNest/
 │   ├── context/         # React Context providers
 │   │   ├── ThemeContext.tsx           # Theme management
 │   │   ├── LocaleContext.tsx          # Language management
-│   │   ├── TaskContext.tsx            # Task state & persistence
+│   │   ├── TaskContext.tsx            # Task state & persistence & overdue detection
+│   │   ├── PointsContext.tsx          # Points & level system
 │   │   └── AchievementContext.tsx     # Achievement & streak logic
 │   ├── services/        # External services
 │   │   ├── aiService.ts               # Google Gemini AI integration
@@ -193,7 +225,7 @@ TaskNest/
 │   ├── navigation/      # React Navigation setup
 │   │   └── MainNavigator.tsx          # Material Top Tabs
 │   ├── types/           # TypeScript type definitions
-│   │   ├── task.types.ts              # Task, Category, Priority types
+│   │   ├── task.types.ts              # Task, Category, Priority, TaskStatus types
 │   │   └── achievement.types.ts       # Achievement & Streak types
 │   ├── locales/         # i18n translation files (TR/EN)
 │   │   ├── tr.ts                      # Turkish translations
@@ -247,6 +279,32 @@ This project is open source and available under the MIT License.
 - ⚡ **Sıralı Sistem**: Birden fazla başarı pürüzsüz geçişlerle sırayla gösterilir
 - ✨ **Kutlama Efektleri**: Kilidi açıldığında pulse, glow ve konfeti animasyonları
 
+#### ⭐ Puan & Seviye Sistemi (Yeni!)
+- 🎯 **Puan Sistemi**: Görev tamamlayarak puan kazanın
+  - ⚡ **+15 puan** erken tamamlama için (zamanlanan saatten önce)
+  - ✅ **+10 puan** normal tamamlama için
+  - ⏭️ **-5 puan** görev atlama için
+  - ❌ **-10 puan** başarısız işaretleme için
+  - ⚠️ **-15 puan** otomatik başarısız görevler için (24 saat gecikme)
+- 🏅 **Seviye Sistemi**: Seviyelerde ilerleyin (seviye başına 100 puan, maks 50)
+- 📈 **Canlı İlerleme Çubuğu**: Altın vurgulu görsel ilerleme göstergesi
+- 🏆 **İstatistik Ekranı**: Toplam puan, mevcut seviye ve ilerleme yüzdesi
+- 📊 **Puan Geçmişi**: Tüm puan değişikliklerini aksiyon tipleriyle takip edin
+
+#### 🚨 Gecikmiş Görev Yönetimi (Yeni!)
+- ⏰ **Otomatik Gecikme Algılama**: Görevler zamanlanan saatten sonra otomatik gecikir
+- 🔴 **Görsel İşaretler**: Gecikmiş görevlerde kırmızı kenarlık (6px) ve uyarı rozeti
+- ⚡ **Hızlı Aksiyonlar**: Gecikmiş görevler için üç aksiyon butonu:
+  - ✅ **Tamamla** (+10 puan): Görevi bitti olarak işaretle
+  - ⏭️ **Atla** (-5 puan): Onaylama ile görevi atla
+  - ❌ **Başarısız** (-10 puan): Seri uyarısıyla başarısız işaretle
+- ⏱️ **Zaman Takibi**: Görevin ne kadar süredir geciktiğini gösterir (gün/saat/dakika)
+- 🔄 **Otomatik Başarısız Sistemi**: Görevler 24 saat sonra otomatik başarısız olur (-15 puan)
+- 🔔 **Gerçek Zamanlı Güncelleme**: Her 60 saniyede gecikmiş görevleri kontrol eder
+- 🎯 **Haptik Geri Bildirim**: Tüm gecikme aksiyonları için dokunsal tepki
+- 📱 **Onay Uyarıları**: Atla/başarısız aksiyonları için güvenlik onayları
+- 🔥 **Seri Koruması**: Seriyi kırabilecek aksiyonlar öncesi uyarır
+
 #### 🤖 Yapay Zeka Destekli Özellikler (Yeni!)
 - ✨ **Akıllı Görev Önerileri**: Google Gemini AI görev başlığınızı analiz eder ve önerir:
   - 📁 En uygun kategori (İş, Kişisel, Sağlık, Alışveriş, Diğer)
@@ -296,7 +354,10 @@ This project is open source and available under the MIT License.
 - 🌐 **Yerelleştirilmiş Mesajlar**: Tüm bildirimler dil seçiminize uyar
 
 #### Kullanıcı Deneyimi
-- 🎯 **Akıllı Karşılama**: İlk kullanıcılar için 4 adımlı interaktif öğretici
+- 🎯 **Akıllı Karşılama**: Yumuşak animasyonlarla 4 adımlı interaktif öğretici
+  - 🎨 **Açılış Ekranı**: Fade/scale animasyonlu KΛEN Labs logosu
+  - ✨ **Animasyonlu Geçişler**: Açılış → karşılama → uygulama arası yumuşak kayma & solma
+  - 🎬 **Çıkış Animasyonları**: Tamamlamada yakınlaştırma & solma efektleri
 - 🌙 **Koyu/Açık Tema**: Otomatik geçişli güzel pastel temalar
 - 🌍 **İki Dilli Destek**: Reaktif dil değişimi ile tam Türkçe ve İngilizce
 - 🎨 **Modern Arayüz**: 60fps akıcı animasyonlarla temiz, yuvarlak kartlar
@@ -412,6 +473,9 @@ _Ekran görüntüleri eklenecek_
 - [x] ~~Günlük hatırlatıcılar~~
 - [x] ~~Seri hatırlatıcıları~~
 - [x] ~~Başarım bildirimleri~~
+- [x] ~~Puan & seviye sistemi~~
+- [x] ~~Gecikmiş görev yönetimi~~
+- [x] ~~Açılış animasyonları (splash & onboarding)~~
 - [ ] Haftalık özet raporu
 - [ ] Görev tekrarlama (recurring tasks)
 - [ ] Veri yedekleme/geri yükleme

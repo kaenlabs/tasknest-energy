@@ -14,6 +14,7 @@ import { useTasks } from '../context/TaskContext';
 import { useTheme } from '../context/ThemeContext';
 import { useLocale } from '../context/LocaleContext';
 import { useAchievements } from '../context/AchievementContext';
+import { usePoints } from '../context/PointsContext';
 import { translate } from '../locales/i18n';
 import { Category, Priority } from '../types/task.types';
 import { getCategoryIcon, getCategoryColor, getPriorityColor } from '../utils/taskHelpers';
@@ -28,6 +29,7 @@ export const StatsScreen: React.FC = () => {
   const { locale } = useLocale(); // This will trigger re-render on language change
   const { tasks } = useTasks();
   const { achievements } = useAchievements();
+  const { totalPoints, currentLevel, progressToNextLevel } = usePoints();
   const [showNotificationSettings, setShowNotificationSettings] = useState(false);
 
   const completedTasks = tasks.filter((t) => t.completed);
@@ -100,6 +102,36 @@ export const StatsScreen: React.FC = () => {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
+        {/* Points & Level Card */}
+        <View style={[styles.pointsCard, { backgroundColor: theme.primary }]}>
+          <View style={styles.pointsHeader}>
+            <View>
+              <Text style={styles.pointsLabel}>Total Points</Text>
+              <Text style={styles.pointsValue}>{totalPoints} ⭐</Text>
+            </View>
+            <View style={styles.levelBadge}>
+              <Ionicons name="trophy" size={24} color="#FFD700" />
+              <Text style={styles.levelText}>Level {currentLevel}</Text>
+            </View>
+          </View>
+          <View style={styles.progressContainer}>
+            <View style={[styles.levelProgressBar, { backgroundColor: 'rgba(255,255,255,0.3)' }]}>
+              <View
+                style={[
+                  styles.levelProgressFill,
+                  {
+                    width: `${progressToNextLevel}%`,
+                    backgroundColor: '#FFD700',
+                  },
+                ]}
+              />
+            </View>
+            <Text style={styles.progressText}>
+              {Math.round(progressToNextLevel)}% to Level {currentLevel + 1}
+            </Text>
+          </View>
+        </View>
+
         {/* Overview Cards */}
         <View style={styles.overviewGrid}>
           <View style={[styles.statCard, { backgroundColor: theme.surface }]}>
@@ -347,6 +379,60 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 20,
     paddingBottom: 100,
+  },
+  pointsCard: {
+    padding: 20,
+    borderRadius: 20,
+    marginBottom: 20,
+  },
+  pointsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  pointsLabel: {
+    color: 'rgba(255,255,255,0.9)',
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  pointsValue: {
+    color: 'white',
+    fontSize: 36,
+    fontWeight: '800',
+  },
+  levelBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    gap: 8,
+  },
+  levelText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  progressContainer: {
+    gap: 8,
+  },
+  levelProgressBar: {
+    height: 8,
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  levelProgressFill: {
+    height: '100%',
+    borderRadius: 4,
+  },
+  progressText: {
+    color: 'rgba(255,255,255,0.9)',
+    fontSize: 12,
+    fontWeight: '600',
+    textAlign: 'center',
   },
   overviewGrid: {
     flexDirection: 'row',

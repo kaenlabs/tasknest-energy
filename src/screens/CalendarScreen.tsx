@@ -6,8 +6,8 @@ import {
   TouchableOpacity,
   ScrollView,
   Dimensions,
-  SafeAreaView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTasks } from '../context/TaskContext';
 import { useTheme } from '../context/ThemeContext';
@@ -16,6 +16,7 @@ import { Task } from '../types/task.types';
 import { TaskCard } from '../components/TaskCard';
 import { hapticFeedback } from '../utils/haptics';
 import { useAchievements } from '../context/AchievementContext';
+import { usePoints, POINTS_CONFIG } from '../context/PointsContext';
 
 const { width } = Dimensions.get('window');
 const CELL_SIZE = (width - 40) / 7;
@@ -31,6 +32,7 @@ export const CalendarScreen: React.FC = () => {
   const { theme } = useTheme();
   const { tasks, toggleTaskCompletion, deleteTask } = useTasks();
   const { updateStreak, checkAndUnlockAchievements } = useAchievements();
+  const { addPoints } = usePoints();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
@@ -130,6 +132,25 @@ export const CalendarScreen: React.FC = () => {
     
     if (task && !task.completed) {
       hapticFeedback.medium();
+      
+      // Calculate points based on task timing
+      let points = POINTS_CONFIG.COMPLETE_NORMAL;
+      let action: 'complete' | 'complete_on_time' = 'complete';
+      
+      // Check if task has schedule and completed on time
+      if (task.scheduledDate && task.scheduledTime) {
+        const [hours, minutes] = task.scheduledTime.split(':').map(Number);
+        const scheduledDateTime = new Date(task.scheduledDate);
+        scheduledDateTime.setHours(hours, minutes, 0, 0);
+        
+        if (Date.now() < scheduledDateTime.getTime()) {
+          // Completed before scheduled time - bonus!
+          points = POINTS_CONFIG.COMPLETE_ON_TIME;
+          action = 'complete_on_time';
+        }
+      }
+      
+      await addPoints(task.id, task.title, points, action);
       await updateStreak();
       
       setTimeout(async () => {
@@ -158,7 +179,10 @@ export const CalendarScreen: React.FC = () => {
   const selectedDayTasks = selectedDate ? getTasksForDate(selectedDate) : [];
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+    <SafeAreaView 
+      style={[styles.container, { backgroundColor: theme.background }]}
+      edges={['top', 'left', 'right']}
+    >
       {/* Header */}
       <View style={[styles.header, { backgroundColor: theme.surface }]}>
         <TouchableOpacity onPress={handlePreviousMonth} style={styles.headerButton}>

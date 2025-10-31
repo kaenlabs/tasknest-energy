@@ -12,6 +12,7 @@ import { useTheme } from '../context/ThemeContext';
 import { useLocale } from '../context/LocaleContext';
 import { translate } from '../locales/i18n';
 import { getCategoryIcon, getPriorityColor } from '../utils/taskHelpers';
+import { OverdueActionCard } from './OverdueActionCard';
 
 interface TaskCardProps {
   task: Task;
@@ -45,6 +46,9 @@ export const TaskCard: React.FC<TaskCardProps> = ({
     ],
   };
 
+  // Check if task is overdue
+  const isOverdue = task.status === 'overdue';
+
   return (
     <Animated.View style={[styles.container, animatedStyle]}>
       <TouchableOpacity
@@ -52,7 +56,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           styles.card,
           {
             backgroundColor: theme.surface,
-            borderLeftColor: energyColor,
+            borderLeftColor: isOverdue ? '#EF4444' : energyColor,
+            borderLeftWidth: isOverdue ? 6 : 4,
             shadowColor: theme.cardShadow,
           },
         ]}
@@ -151,6 +156,9 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           <Ionicons name="trash-outline" size={22} color={theme.textSecondary} />
         </TouchableOpacity>
       </TouchableOpacity>
+
+      {/* Show overdue actions if task is overdue */}
+      {isOverdue && <OverdueActionCard task={task} />}
     </Animated.View>
   );
 };

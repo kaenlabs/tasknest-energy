@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Task, EnergyLevel, Priority, Category } from '../types/task.types';
+import { Task, EnergyLevel, Priority, Category, TaskStatus } from '../types/task.types';
 import { scheduleTaskNotification, scheduleDailyReminder } from '../services/notificationService';
 
 interface TaskContextType {
@@ -28,6 +28,12 @@ interface TaskContextType {
     scheduledDate?: number,
     scheduledTime?: string
   ) => void;
+  
+  // Overdue task actions
+  markTaskAsSkipped: (id: string) => void;
+  markTaskAsFailed: (id: string) => void;
+  checkOverdueTasks: () => void;
+  
   isLoading: boolean;
 }
 
@@ -53,7 +59,16 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       const savedTasks = await AsyncStorage.getItem(TASKS_STORAGE_KEY);
       if (savedTasks) {
-        setTasks(JSON.parse(savedTasks));
+        const parsedTasks = JSON.parse(savedTasks);
+        
+        // Migrate old tasks to new format (add status and pointsEarned if missing)
+        const migratedTasks = parsedTasks.map((task: Task) => ({
+          ...task,
+          status: task.status || 'active',
+          pointsEarned: task.pointsEarned || 0,
+        }));
+        
+        setTasks(migratedTasks);
       }
     } catch (error) {
       console.error('Error loading tasks:', error);
@@ -93,6 +108,10 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       scheduledDate,
       scheduledTime,
       isScheduled: !!(scheduledDate || scheduledTime),
+      
+      // Overdue system defaults
+      status: 'active',
+      pointsEarned: 0,
     };
     setTasks([newTask, ...tasks]);
     
@@ -138,6 +157,8 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             ...task,
             completed: !task.completed,
             completedAt: !task.completed ? Date.now() : undefined,
+            status: !task.completed ? 'completed' as TaskStatus : task.status,
+            pointsEarned: !task.completed && task.pointsEarned === 0 ? 10 : task.pointsEarned,
           }
         : task
     );
@@ -198,6 +219,104 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     scheduleDailyReminder(todayTasks);
   };
 
+  // Mark task as skipped (-5 points)
+  const markTaskAsSkipped = (id: string) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id
+          ? {
+              ...task,
+              status: 'skipped' as TaskStatus,
+              skippedAt: Date.now(),
+              pointsEarned: -5,
+            }
+          : task
+      )
+    );
+    console.log(`⏭️ Task skipped: ${id} (-5 points)`);
+  };
+
+  // Mark task as failed (-10 points)
+  const markTaskAsFailed = (id: string) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id
+          ? {
+              ...task,
+              status: 'failed' as TaskStatus,
+              failedAt: Date.now(),
+              pointsEarned: -10,
+            }
+          : task
+      )
+    );
+    console.log(`❌ Task failed: ${id} (-10 points)`);
+  };
+
+  // Check for overdue tasks
+  const checkOverdueTasks = useCallback(() => {
+    setTasks((currentTasks) => {
+      const now = Date.now();
+      let hasChanges = false;
+      
+      const updatedTasks = currentTasks.map((task) => {
+        // Skip if already completed, skipped, or failed
+        if (task.status === 'completed' || task.status === 'skipped' || task.status === 'failed') {
+          return task;
+        }
+
+        // Check if task has schedule
+        if (!task.scheduledDate || !task.scheduledTime) {
+          return task;
+        }
+
+        // Parse scheduled time
+        const [hours, minutes] = task.scheduledTime.split(':').map(Number);
+        const scheduledDateTime = new Date(task.scheduledDate);
+        scheduledDateTime.setHours(hours, minutes, 0, 0);
+
+        // Check if overdue
+        if (scheduledDateTime.getTime() < now) {
+          // Check if 24 hours passed - auto fail
+          const hoursPassed = (now - scheduledDateTime.getTime()) / (1000 * 60 * 60);
+          if (hoursPassed >= 24) {
+            console.log(`⏰ Task auto-failed (24h passed): ${task.title}`);
+            hasChanges = true;
+            return {
+              ...task,
+              status: 'failed' as TaskStatus,
+              failedAt: now,
+              pointsEarned: -15,
+            };
+          }
+
+          // Just mark as overdue if not already
+          if (task.status === 'active') {
+            hasChanges = true;
+            return {
+              ...task,
+              status: 'overdue' as TaskStatus,
+            };
+          }
+        }
+
+        return task;
+      });
+
+      // Only update if there were actual changes
+      return hasChanges ? updatedTasks : currentTasks;
+    });
+  }, []);
+
+  // Check overdue tasks every minute
+  useEffect(() => {
+    if (isLoading) return;
+    
+    checkOverdueTasks();
+    const interval = setInterval(checkOverdueTasks, 60000); // Check every minute
+    return () => clearInterval(interval);
+  }, []); // Run only once on mount and set up interval
+
   return (
     <TaskContext.Provider
       value={{
@@ -206,6 +325,9 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         deleteTask,
         toggleTaskCompletion,
         updateTask,
+        markTaskAsSkipped,
+        markTaskAsFailed,
+        checkOverdueTasks,
         isLoading,
       }}
     >
