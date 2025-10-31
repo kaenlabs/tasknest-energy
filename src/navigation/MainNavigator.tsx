@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
+import { useLocale } from '../context/LocaleContext';
 import { HomeScreen } from '../screens/HomeScreen';
 import { StatsScreen } from '../screens/StatsScreen';
 import { translate } from '../locales/i18n';
@@ -17,6 +18,7 @@ const Tab = createMaterialTopTabNavigator<RootTabParamList>();
 
 export const MainNavigator: React.FC = () => {
   const { theme } = useTheme();
+  const { locale } = useLocale(); // This will trigger re-render on language change
 
   return (
     <NavigationContainer>

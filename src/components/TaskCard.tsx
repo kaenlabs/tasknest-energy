@@ -9,6 +9,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { Task } from '../types/task.types';
 import { useTheme } from '../context/ThemeContext';
+import { useLocale } from '../context/LocaleContext';
 import { translate } from '../locales/i18n';
 import { getCategoryIcon, getPriorityColor } from '../utils/taskHelpers';
 
@@ -26,6 +27,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   animatedValue = new Animated.Value(1),
 }) => {
   const { theme } = useTheme();
+  const { locale } = useLocale(); // This will trigger re-render on language change
 
   const energyColor = task.energy === 'high' ? theme.highEnergy : theme.lowEnergy;
   const energyIcon = task.energy === 'high' 

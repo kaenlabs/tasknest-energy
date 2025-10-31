@@ -13,6 +13,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { EnergyLevel, Priority, Category } from '../types/task.types';
 import { useTheme } from '../context/ThemeContext';
+import { useLocale } from '../context/LocaleContext';
 import { translate } from '../locales/i18n';
 import {
   getCategoryIcon,
@@ -38,6 +39,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
   onSave,
 }) => {
   const { theme } = useTheme();
+  const { locale } = useLocale(); // This will trigger re-render on language change
   const [title, setTitle] = useState('');
   const [note, setNote] = useState('');
   const [energy, setEnergy] = useState<EnergyLevel>('high');

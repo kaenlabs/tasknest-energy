@@ -15,6 +15,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { useTasks } from '../context/TaskContext';
 import { useTheme } from '../context/ThemeContext';
+import { useLocale } from '../context/LocaleContext';
 import { TaskFilter, Task } from '../types/task.types';
 import { Header } from '../components/Header';
 import { FilterBar } from '../components/FilterBar';
@@ -37,6 +38,7 @@ if (Platform.OS === 'android') {
 
 export const HomeScreen: React.FC = () => {
   const { theme, colorScheme } = useTheme();
+  const { locale } = useLocale(); // This will trigger re-render on language change
   const { tasks, addTask, deleteTask, toggleTaskCompletion } = useTasks();
   const [activeFilter, setActiveFilter] = useState<TaskFilter>('all');
   const [isModalVisible, setIsModalVisible] = useState(false);

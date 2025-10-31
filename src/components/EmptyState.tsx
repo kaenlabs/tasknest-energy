@@ -2,10 +2,12 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
+import { useLocale } from '../context/LocaleContext';
 import { translate } from '../locales/i18n';
 
 export const EmptyState: React.FC = () => {
   const { theme } = useTheme();
+  const { locale } = useLocale(); // This will trigger re-render on language change
 
   return (
     <View style={styles.container}>

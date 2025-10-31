@@ -10,6 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTasks } from '../context/TaskContext';
 import { useTheme } from '../context/ThemeContext';
+import { useLocale } from '../context/LocaleContext';
 import { translate } from '../locales/i18n';
 import { Category, Priority } from '../types/task.types';
 import { getCategoryIcon, getCategoryColor, getPriorityColor } from '../utils/taskHelpers';
@@ -18,6 +19,7 @@ const { width } = Dimensions.get('window');
 
 export const StatsScreen: React.FC = () => {
   const { theme } = useTheme();
+  const { locale } = useLocale(); // This will trigger re-render on language change
   const { tasks } = useTasks();
 
   const completedTasks = tasks.filter((t) => t.completed);

@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { TaskFilter } from '../types/task.types';
 import { useTheme } from '../context/ThemeContext';
+import { useLocale } from '../context/LocaleContext';
 import { translate } from '../locales/i18n';
 
 interface FilterBarProps {
@@ -20,6 +21,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   onFilterChange,
 }) => {
   const { theme } = useTheme();
+  const { locale } = useLocale(); // This will trigger re-render on language change
 
   const filters: { key: TaskFilter; label: string }[] = [
     { key: 'all', label: translate('allTasks') },

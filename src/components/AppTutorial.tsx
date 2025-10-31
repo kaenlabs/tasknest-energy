@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
+import { useLocale } from '../context/LocaleContext';
 import { translate } from '../locales/i18n';
 
 const { width, height } = Dimensions.get('window');
@@ -38,6 +39,7 @@ export const AppTutorial: React.FC<AppTutorialProps> = ({
   steps,
 }) => {
   const { theme } = useTheme();
+  const { locale } = useLocale(); // This will trigger re-render on language change
   const [currentStep, setCurrentStep] = useState(0);
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
