@@ -141,4 +141,71 @@ export const tr = {
   // Stats screen sections
   categoryDistribution: 'Kategori Dağılımı',
   priorityDistribution: 'Öncelik Dağılımı',
+
+  // Achievements
+  achievements: {
+    title: 'Başarılar',
+    unlocked: 'Kazanıldı',
+    locked: 'Kilitli',
+    progress: 'İlerleme',
+    
+    firstTask: {
+      title: 'İlk Adım',
+      description: 'İlk görevini tamamla',
+    },
+    taskMaster10: {
+      title: 'Görev Ustası',
+      description: '10 görev tamamla',
+    },
+    taskMaster50: {
+      title: 'Profesyonel',
+      description: '50 görev tamamla',
+    },
+    taskMaster100: {
+      title: 'Efsane',
+      description: '100 görev tamamla',
+    },
+    streak3: {
+      title: 'Ateş Topusu',
+      description: '3 gün üst üste görev tamamla',
+    },
+    streak7: {
+      title: 'Haftalık Yıldız',
+      description: '7 gün üst üste görev tamamla',
+    },
+    streak30: {
+      title: 'Kararlılık Kralı',
+      description: '30 gün üst üste görev tamamla',
+    },
+    weekWarrior: {
+      title: 'Hafta Savaşçısı',
+      description: 'Bir haftada her gün görev tamamla',
+    },
+    categoryMaster: {
+      title: 'Kategori Uzmanı',
+      description: '5 farklı kategoride görev tamamla',
+    },
+    priorityPro: {
+      title: 'Öncelik Ustası',
+      description: '10 yüksek öncelikli görev tamamla',
+    },
+    earlyBird: {
+      title: 'Erken Kuş',
+      description: 'Sabah 9\'dan önce 5 görev tamamla',
+    },
+    nightOwl: {
+      title: 'Gece Kuşu',
+      description: 'Gece 22\'den sonra 5 görev tamamla',
+    },
+  },
+
+  // Streak
+  streak: {
+    title: 'Seri',
+    current: 'Mevcut Seri',
+    longest: 'En Uzun Seri',
+    days: 'gün',
+    keepGoing: 'Devam et!',
+    startToday: 'Bugün başla!',
+  },
 };

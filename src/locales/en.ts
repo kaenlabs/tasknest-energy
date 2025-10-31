@@ -141,4 +141,71 @@ export const en = {
   // Stats screen sections
   categoryDistribution: 'Category Distribution',
   priorityDistribution: 'Priority Distribution',
+
+  // Achievements
+  achievements: {
+    title: 'Achievements',
+    unlocked: 'Unlocked',
+    locked: 'Locked',
+    progress: 'Progress',
+    
+    firstTask: {
+      title: 'First Step',
+      description: 'Complete your first task',
+    },
+    taskMaster10: {
+      title: 'Task Master',
+      description: 'Complete 10 tasks',
+    },
+    taskMaster50: {
+      title: 'Professional',
+      description: 'Complete 50 tasks',
+    },
+    taskMaster100: {
+      title: 'Legendary',
+      description: 'Complete 100 tasks',
+    },
+    streak3: {
+      title: 'On Fire',
+      description: 'Complete tasks 3 days in a row',
+    },
+    streak7: {
+      title: 'Week Star',
+      description: 'Complete tasks 7 days in a row',
+    },
+    streak30: {
+      title: 'Dedication King',
+      description: 'Complete tasks 30 days in a row',
+    },
+    weekWarrior: {
+      title: 'Week Warrior',
+      description: 'Complete tasks every day of the week',
+    },
+    categoryMaster: {
+      title: 'Category Expert',
+      description: 'Complete tasks in 5 different categories',
+    },
+    priorityPro: {
+      title: 'Priority Master',
+      description: 'Complete 10 high priority tasks',
+    },
+    earlyBird: {
+      title: 'Early Bird',
+      description: 'Complete 5 tasks before 9 AM',
+    },
+    nightOwl: {
+      title: 'Night Owl',
+      description: 'Complete 5 tasks after 10 PM',
+    },
+  },
+
+  // Streak
+  streak: {
+    title: 'Streak',
+    current: 'Current Streak',
+    longest: 'Longest Streak',
+    days: 'days',
+    keepGoing: 'Keep going!',
+    startToday: 'Start today!',
+  },
 };

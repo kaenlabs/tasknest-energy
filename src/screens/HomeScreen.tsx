@@ -16,6 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTasks } from '../context/TaskContext';
 import { useTheme } from '../context/ThemeContext';
 import { useLocale } from '../context/LocaleContext';
+import { useAchievements } from '../context/AchievementContext';
 import { TaskFilter, Task } from '../types/task.types';
 import { Header } from '../components/Header';
 import { FilterBar } from '../components/FilterBar';
@@ -24,6 +25,7 @@ import { AddTaskModal } from '../components/AddTaskModal';
 import { EmptyState } from '../components/EmptyState';
 import { DevTools } from '../components/DevTools';
 import { AppTutorial } from '../components/AppTutorial';
+import { StreakCard } from '../components/StreakCard';
 import { translate } from '../locales/i18n';
 
 const { width, height } = Dimensions.get('window');
@@ -40,6 +42,7 @@ export const HomeScreen: React.FC = () => {
   const { theme, colorScheme } = useTheme();
   const { locale } = useLocale(); // This will trigger re-render on language change
   const { tasks, addTask, deleteTask, toggleTaskCompletion } = useTasks();
+  const { streak, updateStreak, checkAndUnlockAchievements } = useAchievements();
   const [activeFilter, setActiveFilter] = useState<TaskFilter>('all');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
@@ -172,8 +175,21 @@ export const HomeScreen: React.FC = () => {
     });
   };
 
-  const handleToggleComplete = (id: string) => {
+  const handleToggleComplete = async (id: string) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    const task = tasks.find((t) => t.id === id);
+    
+    if (task && !task.completed) {
+      // Completing a task
+      await updateStreak();
+      
+      // Check achievements after a small delay to get updated tasks
+      setTimeout(async () => {
+        const completedCount = tasks.filter((t) => t.completed).length + 1;
+        await checkAndUnlockAchievements(completedCount, tasks);
+      }, 100);
+    }
+    
     toggleTaskCompletion(id);
   };
 
@@ -191,6 +207,8 @@ export const HomeScreen: React.FC = () => {
       <StatusBar style={colorScheme === 'light' ? 'dark' : 'light'} />
 
       <Header />
+
+      <StreakCard currentStreak={streak.currentStreak} longestStreak={streak.longestStreak} />
 
       <FilterBar activeFilter={activeFilter} onFilterChange={handleFilterChange} />
 

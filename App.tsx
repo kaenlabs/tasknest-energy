@@ -4,6 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider } from './src/context/ThemeContext';
 import { LocaleProvider } from './src/context/LocaleContext';
 import { TaskProvider } from './src/context/TaskContext';
+import { AchievementProvider } from './src/context/AchievementContext';
 import { MainNavigator } from './src/navigation/MainNavigator';
 import { SplashScreen } from './src/components/SplashScreen';
 import { OnboardingScreen } from './src/screens/OnboardingScreen';
@@ -74,7 +75,9 @@ export default function App() {
       <ThemeProvider>
         <LocaleProvider>
           <TaskProvider>
-            <MainNavigator />
+            <AchievementProvider>
+              <MainNavigator />
+            </AchievementProvider>
           </TaskProvider>
         </LocaleProvider>
       </ThemeProvider>
