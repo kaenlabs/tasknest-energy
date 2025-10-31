@@ -7,12 +7,14 @@ import { useTheme } from '../context/ThemeContext';
 import { useLocale } from '../context/LocaleContext';
 import { useAchievements } from '../context/AchievementContext';
 import { HomeScreen } from '../screens/HomeScreen';
+import { ScheduledScreen } from '../screens/ScheduledScreen';
 import { StatsScreen } from '../screens/StatsScreen';
 import { AchievementQueue } from '../components/AchievementQueue';
 import { translate } from '../locales/i18n';
 
 export type RootTabParamList = {
   Tasks: undefined;
+  Scheduled: undefined;
   Statistics: undefined;
 };
 
@@ -56,6 +58,16 @@ export const MainNavigator: React.FC = () => {
             tabBarLabel: translate('tabs.tasks'),
             tabBarIcon: ({ color }) => (
               <Ionicons name="list" size={24} color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Scheduled"
+          component={ScheduledScreen}
+          options={{
+            tabBarLabel: translate('tabs.scheduled'),
+            tabBarIcon: ({ color }) => (
+              <Ionicons name="calendar" size={24} color={color} />
             ),
           }}
         />

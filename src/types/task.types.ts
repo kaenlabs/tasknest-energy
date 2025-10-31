@@ -13,6 +13,9 @@ export interface Task {
   createdAt: number;
   completedAt?: number;
   estimatedDuration?: string; // e.g., "15 mins", "1 hour", "2+ hours"
+  scheduledDate?: number; // timestamp for the scheduled day (start of day)
+  scheduledTime?: string; // e.g., "09:00", "14:30"
+  isScheduled?: boolean; // quick flag to filter scheduled tasks
 }
 
 export type TaskFilter = 'all' | 'low' | 'high' | 'completed';

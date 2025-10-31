@@ -18,6 +18,12 @@ export const en = {
   taskTitle: 'Task Title',
   taskNote: 'Note (Optional)',
   taskDuration: 'Estimated Duration',
+  scheduleTask: 'Schedule Task',
+  scheduledDate: 'Date',
+  scheduledTime: 'Time',
+  selectDate: 'Select Date',
+  selectTime: 'Select Time',
+  noSchedule: 'Not Scheduled',
   energyLevel: 'Energy Level',
   selectEnergyLevel: 'Select Energy Level',
   cancel: 'Cancel',
@@ -127,7 +133,18 @@ export const en = {
   // Tabs
   tabs: {
     tasks: 'Tasks',
+    scheduled: 'Scheduled',
     statistics: 'Statistics',
+  },
+
+  // Scheduled Tasks
+  scheduled: {
+    title: 'Scheduled Tasks',
+    today: 'Today',
+    upcoming: 'Upcoming',
+    overdue: 'Overdue',
+    noScheduled: 'No scheduled tasks',
+    noScheduledDesc: 'Add tasks with date and time to schedule them',
   },
 
   // Week days (short)
@@ -222,5 +239,8 @@ export const en = {
     duration: 'Duration',
     tip: 'Tip',
     applySuggestions: 'Apply Suggestions',
+    suggestedSchedule: 'Suggested Schedule',
+    applySchedule: 'Apply Schedule',
+    scheduleRecommendation: 'AI Schedule Recommendation',
   },
 };

@@ -10,7 +10,9 @@ interface TaskContextType {
     energy: EnergyLevel,
     priority: Priority,
     category: Category,
-    estimatedDuration?: string
+    estimatedDuration?: string,
+    scheduledDate?: number,
+    scheduledTime?: string
   ) => void;
   deleteTask: (id: string) => void;
   toggleTaskCompletion: (id: string) => void;
@@ -21,7 +23,9 @@ interface TaskContextType {
     energy: EnergyLevel,
     priority: Priority,
     category: Category,
-    estimatedDuration?: string
+    estimatedDuration?: string,
+    scheduledDate?: number,
+    scheduledTime?: string
   ) => void;
   isLoading: boolean;
 }
@@ -71,7 +75,9 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     energy: EnergyLevel,
     priority: Priority = 'medium',
     category: Category = 'other',
-    estimatedDuration?: string
+    estimatedDuration?: string,
+    scheduledDate?: number,
+    scheduledTime?: string
   ) => {
     const newTask: Task = {
       id: Date.now().toString(),
@@ -83,6 +89,9 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       completed: false,
       createdAt: Date.now(),
       estimatedDuration,
+      scheduledDate,
+      scheduledTime,
+      isScheduled: !!(scheduledDate || scheduledTime),
     };
     setTasks([newTask, ...tasks]);
   };
@@ -112,12 +121,25 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     energy: EnergyLevel,
     priority: Priority,
     category: Category,
-    estimatedDuration?: string
+    estimatedDuration?: string,
+    scheduledDate?: number,
+    scheduledTime?: string
   ) => {
     setTasks(
       tasks.map((task) =>
         task.id === id 
-          ? { ...task, title, note, energy, priority, category, estimatedDuration } 
+          ? { 
+              ...task, 
+              title, 
+              note, 
+              energy, 
+              priority, 
+              category, 
+              estimatedDuration,
+              scheduledDate,
+              scheduledTime,
+              isScheduled: !!(scheduledDate || scheduledTime),
+            } 
           : task
       )
     );

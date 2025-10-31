@@ -11,6 +11,7 @@ import {
   Platform,
   ActivityIndicator,
 } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { Ionicons } from '@expo/vector-icons';
 import { Task, EnergyLevel, Priority, Category } from '../types/task.types';
 import { useTheme } from '../context/ThemeContext';
@@ -18,6 +19,7 @@ import { useLocale } from '../context/LocaleContext';
 import { getTaskSuggestions, TaskSuggestion } from '../services/aiService';
 import { hapticFeedback } from '../utils/haptics';
 import { translate } from '../locales/i18n';
+import i18n from '../locales/i18n';
 import {
   getCategoryIcon,
   getCategoryColor,
@@ -33,7 +35,9 @@ interface AddTaskModalProps {
     energy: EnergyLevel,
     priority: Priority,
     category: Category,
-    estimatedDuration?: string
+    estimatedDuration?: string,
+    scheduledDate?: number,
+    scheduledTime?: string
   ) => void;
   editTask?: Task | null; // Optional task to edit
 }
@@ -52,6 +56,10 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
   const [priority, setPriority] = useState<Priority>('medium');
   const [category, setCategory] = useState<Category>('other');
   const [estimatedDuration, setEstimatedDuration] = useState<string>('');
+  const [scheduledDate, setScheduledDate] = useState<Date | null>(null);
+  const [scheduledTime, setScheduledTime] = useState<Date | null>(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
   const [aiSuggestion, setAiSuggestion] = useState<TaskSuggestion | null>(null);
   const [isLoadingAI, setIsLoadingAI] = useState(false);
 
@@ -64,6 +72,17 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
       setPriority(editTask.priority);
       setCategory(editTask.category);
       setEstimatedDuration(editTask.estimatedDuration || '');
+      
+      // Load scheduled date/time
+      if (editTask.scheduledDate) {
+        setScheduledDate(new Date(editTask.scheduledDate));
+      }
+      if (editTask.scheduledTime) {
+        const [hours, minutes] = editTask.scheduledTime.split(':');
+        const time = new Date();
+        time.setHours(parseInt(hours), parseInt(minutes));
+        setScheduledTime(time);
+      }
     } else if (!visible) {
       // Reset when closing
       setTitle('');
@@ -72,6 +91,8 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
       setPriority('medium');
       setCategory('other');
       setEstimatedDuration('');
+      setScheduledDate(null);
+      setScheduledTime(null);
       setAiSuggestion(null);
     }
   }, [editTask, visible]);
@@ -112,15 +133,67 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
     }
   };
 
+  const handleApplyScheduleSuggestion = () => {
+    if (aiSuggestion && (aiSuggestion.scheduledDate || aiSuggestion.scheduledTime)) {
+      // Apply suggested date
+      if (aiSuggestion.scheduledDate) {
+        const today = new Date();
+        let suggestedDate = new Date();
+        
+        switch (aiSuggestion.scheduledDate) {
+          case 'today':
+            suggestedDate = today;
+            break;
+          case 'tomorrow':
+            suggestedDate = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+            break;
+          case 'weekend':
+            // Find next Saturday
+            const daysUntilSaturday = (6 - today.getDay() + 7) % 7 || 7;
+            suggestedDate = new Date(today.getTime() + daysUntilSaturday * 24 * 60 * 60 * 1000);
+            break;
+          case 'next_week':
+            // Next Monday
+            const daysUntilMonday = (8 - today.getDay()) % 7 || 7;
+            suggestedDate = new Date(today.getTime() + daysUntilMonday * 24 * 60 * 60 * 1000);
+            break;
+        }
+        setScheduledDate(suggestedDate);
+      }
+      
+      // Apply suggested time
+      if (aiSuggestion.scheduledTime) {
+        const [hours, minutes] = aiSuggestion.scheduledTime.split(':').map(Number);
+        const timeDate = new Date();
+        timeDate.setHours(hours, minutes, 0, 0);
+        setScheduledTime(timeDate);
+      }
+      
+      hapticFeedback.success();
+    }
+  };
+
   const handleSave = () => {
     if (title.trim()) {
+      // Prepare scheduled date (start of day timestamp)
+      const scheduledDateTimestamp = scheduledDate 
+        ? new Date(scheduledDate.getFullYear(), scheduledDate.getMonth(), scheduledDate.getDate()).getTime()
+        : undefined;
+      
+      // Prepare scheduled time (HH:MM format)
+      const scheduledTimeString = scheduledTime
+        ? `${scheduledTime.getHours().toString().padStart(2, '0')}:${scheduledTime.getMinutes().toString().padStart(2, '0')}`
+        : undefined;
+
       onSave(
         title.trim(), 
         note.trim(), 
         energy, 
         priority, 
         category,
-        estimatedDuration || undefined
+        estimatedDuration || undefined,
+        scheduledDateTimestamp,
+        scheduledTimeString
       );
       setTitle('');
       setNote('');
@@ -128,6 +201,8 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
       setPriority('medium');
       setCategory('other');
       setEstimatedDuration('');
+      setScheduledDate(null);
+      setScheduledTime(null);
       setAiSuggestion(null);
       onClose();
     }
@@ -140,6 +215,8 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
     setPriority('medium');
     setCategory('other');
     setEstimatedDuration('');
+    setScheduledDate(null);
+    setScheduledTime(null);
     setAiSuggestion(null);
     onClose();
   };
@@ -283,6 +360,59 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
                       {translate('ai.applySuggestions')}
                     </Text>
                   </TouchableOpacity>
+
+                  {/* AI Schedule Suggestion */}
+                  {(aiSuggestion.scheduledDate || aiSuggestion.scheduledTime) && (
+                    <View style={[styles.scheduleRecommendation, { backgroundColor: theme.success + '10', borderColor: theme.success }]}>
+                      <View style={styles.scheduleRecommendationHeader}>
+                        <Ionicons name="calendar-outline" size={18} color={theme.success} />
+                        <Text style={[styles.scheduleRecommendationTitle, { color: theme.success }]}>
+                          {translate('ai.scheduleRecommendation')}
+                        </Text>
+                      </View>
+                      
+                      {aiSuggestion.scheduledDate && (
+                        <View style={styles.scheduleRecommendationRow}>
+                          <Text style={[styles.scheduleRecommendationLabel, { color: theme.textSecondary }]}>
+                            📅 {translate('scheduledDate')}:
+                          </Text>
+                          <Text style={[styles.scheduleRecommendationValue, { color: theme.text }]}>
+                            {aiSuggestion.scheduledDate === 'today' && translate('scheduled.today')}
+                            {aiSuggestion.scheduledDate === 'tomorrow' && (i18n.locale === 'tr' ? 'Yarın' : 'Tomorrow')}
+                            {aiSuggestion.scheduledDate === 'weekend' && (i18n.locale === 'tr' ? 'Hafta Sonu' : 'Weekend')}
+                            {aiSuggestion.scheduledDate === 'next_week' && (i18n.locale === 'tr' ? 'Gelecek Hafta' : 'Next Week')}
+                          </Text>
+                        </View>
+                      )}
+                      
+                      {aiSuggestion.scheduledTime && (
+                        <View style={styles.scheduleRecommendationRow}>
+                          <Text style={[styles.scheduleRecommendationLabel, { color: theme.textSecondary }]}>
+                            ⏰ {translate('scheduledTime')}:
+                          </Text>
+                          <Text style={[styles.scheduleRecommendationValue, { color: theme.text }]}>
+                            {aiSuggestion.scheduledTime}
+                          </Text>
+                        </View>
+                      )}
+                      
+                      {aiSuggestion.scheduleReason && (
+                        <Text style={[styles.scheduleReason, { color: theme.textSecondary }]}>
+                          {aiSuggestion.scheduleReason}
+                        </Text>
+                      )}
+                      
+                      <TouchableOpacity
+                        style={[styles.applyScheduleButton, { backgroundColor: theme.success }]}
+                        onPress={handleApplyScheduleSuggestion}
+                      >
+                        <Ionicons name="checkmark-circle" size={18} color="#FFFFFF" />
+                        <Text style={styles.applyScheduleText}>
+                          {translate('ai.applySchedule')}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
                 </View>
               )}
             </View>
@@ -328,6 +458,86 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
                 placeholder="15 dk, 30 dk, 1 saat..."
                 placeholderTextColor={theme.textSecondary}
               />
+            </View>
+
+            {/* Schedule Section */}
+            <View style={styles.inputGroup}>
+              <Text style={[styles.label, { color: theme.text }]}>
+                📅 {translate('scheduleTask')}
+              </Text>
+              
+              <View style={styles.scheduleRow}>
+                {/* Date Picker Button */}
+                <TouchableOpacity
+                  style={[styles.scheduleButton, { backgroundColor: theme.surface, borderColor: theme.border }]}
+                  onPress={() => setShowDatePicker(true)}
+                >
+                  <Ionicons name="calendar-outline" size={20} color={theme.primary} />
+                  <Text style={[styles.scheduleButtonText, { color: theme.text }]}>
+                    {scheduledDate 
+                      ? scheduledDate.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' })
+                      : translate('selectDate')
+                    }
+                  </Text>
+                  {scheduledDate && (
+                    <TouchableOpacity onPress={() => setScheduledDate(null)}>
+                      <Ionicons name="close-circle" size={18} color={theme.textSecondary} />
+                    </TouchableOpacity>
+                  )}
+                </TouchableOpacity>
+
+                {/* Time Picker Button */}
+                <TouchableOpacity
+                  style={[styles.scheduleButton, { backgroundColor: theme.surface, borderColor: theme.border }]}
+                  onPress={() => setShowTimePicker(true)}
+                >
+                  <Ionicons name="time-outline" size={20} color={theme.primary} />
+                  <Text style={[styles.scheduleButtonText, { color: theme.text }]}>
+                    {scheduledTime 
+                      ? `${scheduledTime.getHours().toString().padStart(2, '0')}:${scheduledTime.getMinutes().toString().padStart(2, '0')}`
+                      : translate('selectTime')
+                    }
+                  </Text>
+                  {scheduledTime && (
+                    <TouchableOpacity onPress={() => setScheduledTime(null)}>
+                      <Ionicons name="close-circle" size={18} color={theme.textSecondary} />
+                    </TouchableOpacity>
+                  )}
+                </TouchableOpacity>
+              </View>
+
+              {/* Date Picker Modal */}
+              {showDatePicker && (
+                <DateTimePicker
+                  value={scheduledDate || new Date()}
+                  mode="date"
+                  display="default"
+                  onChange={(event, selectedDate) => {
+                    setShowDatePicker(false);
+                    if (selectedDate) {
+                      setScheduledDate(selectedDate);
+                      hapticFeedback.light();
+                    }
+                  }}
+                  minimumDate={new Date()}
+                />
+              )}
+
+              {/* Time Picker Modal */}
+              {showTimePicker && (
+                <DateTimePicker
+                  value={scheduledTime || new Date()}
+                  mode="time"
+                  display="default"
+                  onChange={(event, selectedTime) => {
+                    setShowTimePicker(false);
+                    if (selectedTime) {
+                      setScheduledTime(selectedTime);
+                      hapticFeedback.light();
+                    }
+                  }}
+                />
+              )}
             </View>
 
             <View style={styles.inputGroup}>
@@ -705,7 +915,77 @@ const styles = StyleSheet.create({
   },
   applySuggestionText: {
     color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  scheduleRecommendation: {
+    marginTop: 16,
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    gap: 12,
+  },
+  scheduleRecommendationHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
+  scheduleRecommendationTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  scheduleRecommendationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  scheduleRecommendationLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  scheduleRecommendationValue: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  scheduleReason: {
+    fontSize: 13,
+    fontStyle: 'italic',
+    marginTop: 4,
+  },
+  applyScheduleButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    marginTop: 8,
+    gap: 8,
+  },
+  applyScheduleText: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  scheduleRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  scheduleButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    gap: 8,
+  },
+  scheduleButtonText: {
     fontSize: 14,
     fontWeight: '600',
+    flex: 1,
   },
 });

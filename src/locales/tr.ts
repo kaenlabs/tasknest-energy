@@ -18,6 +18,12 @@ export const tr = {
   taskTitle: 'Görev Başlığı',
   taskNote: 'Not (Opsiyonel)',
   taskDuration: 'Tahmini Süre',
+  scheduleTask: 'Görev Planla',
+  scheduledDate: 'Tarih',
+  scheduledTime: 'Saat',
+  selectDate: 'Tarih Seç',
+  selectTime: 'Saat Seç',
+  noSchedule: 'Planlanmamış',
   energyLevel: 'Enerji Düzeyi',
   selectEnergyLevel: 'Enerji Düzeyi Seç',
   cancel: 'İptal',
@@ -127,7 +133,18 @@ export const tr = {
   // Tabs
   tabs: {
     tasks: 'Görevler',
+    scheduled: 'Planlananlar',
     statistics: 'İstatistikler',
+  },
+
+  // Scheduled Tasks
+  scheduled: {
+    title: 'Planlı Görevler',
+    today: 'Bugün',
+    upcoming: 'Yaklaşan',
+    overdue: 'Gecikmiş',
+    noScheduled: 'Planlanmış görev yok',
+    noScheduledDesc: 'Görev eklerken tarih ve saat seçerek planlayın',
   },
 
   // Week days (short)
@@ -222,5 +239,8 @@ export const tr = {
     duration: 'Süre',
     tip: 'İpucu',
     applySuggestions: 'Önerileri Uygula',
+    suggestedSchedule: 'Önerilen Zamanlama',
+    applySchedule: 'Zamanlamayı Uygula',
+    scheduleRecommendation: 'AI Zamanlama Önerisi',
   },
 };

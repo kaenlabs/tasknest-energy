@@ -158,18 +158,20 @@ export const HomeScreen: React.FC = () => {
     energy: 'low' | 'high',
     priority: 'low' | 'medium' | 'high',
     category: 'work' | 'personal' | 'health' | 'shopping' | 'other',
-    estimatedDuration?: string
+    estimatedDuration?: string,
+    scheduledDate?: number,
+    scheduledTime?: string
   ) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     
     if (editingTask) {
       // Update existing task
-      updateTask(editingTask.id, title, note, energy, priority, category, estimatedDuration);
+      updateTask(editingTask.id, title, note, energy, priority, category, estimatedDuration, scheduledDate, scheduledTime);
       setEditingTask(null);
       hapticFeedback.success();
     } else {
       // Add new task
-      addTask(title, note, energy, priority, category, estimatedDuration);
+      addTask(title, note, energy, priority, category, estimatedDuration, scheduledDate, scheduledTime);
       hapticFeedback.light();
     }
   };
