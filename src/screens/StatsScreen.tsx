@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   Dimensions,
+  TouchableOpacity,
+  Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,6 +18,8 @@ import { translate } from '../locales/i18n';
 import { Category, Priority } from '../types/task.types';
 import { getCategoryIcon, getCategoryColor, getPriorityColor } from '../utils/taskHelpers';
 import { AchievementCard } from '../components/AchievementCard';
+import { NotificationSettingsScreen } from './NotificationSettingsScreen';
+import { hapticFeedback } from '../utils/haptics';
 
 const { width } = Dimensions.get('window');
 
@@ -24,6 +28,7 @@ export const StatsScreen: React.FC = () => {
   const { locale } = useLocale(); // This will trigger re-render on language change
   const { tasks } = useTasks();
   const { achievements } = useAchievements();
+  const [showNotificationSettings, setShowNotificationSettings] = useState(false);
 
   const completedTasks = tasks.filter((t) => t.completed);
   const pendingTasks = tasks.filter((t) => !t.completed);
@@ -79,6 +84,15 @@ export const StatsScreen: React.FC = () => {
         <Text style={[styles.title, { color: theme.text }]}>
           {translate('statistics')}
         </Text>
+        <TouchableOpacity
+          style={[styles.settingsButton, { backgroundColor: theme.surface }]}
+          onPress={() => {
+            hapticFeedback.selection();
+            setShowNotificationSettings(true);
+          }}
+        >
+          <Ionicons name="notifications" size={24} color={theme.primary} />
+        </TouchableOpacity>
       </View>
 
       <ScrollView
@@ -262,6 +276,29 @@ export const StatsScreen: React.FC = () => {
           )}
         </View>
       </ScrollView>
+
+      {/* Notification Settings Modal */}
+      <Modal
+        visible={showNotificationSettings}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setShowNotificationSettings(false)}
+      >
+        <SafeAreaView style={[styles.modalContainer, { backgroundColor: theme.background }]}>
+          <View style={[styles.modalHeader, { backgroundColor: theme.surface }]}>
+            <TouchableOpacity
+              onPress={() => {
+                hapticFeedback.light();
+                setShowNotificationSettings(false);
+              }}
+              style={styles.closeButton}
+            >
+              <Ionicons name="close" size={28} color={theme.text} />
+            </TouchableOpacity>
+          </View>
+          <NotificationSettingsScreen />
+        </SafeAreaView>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -271,6 +308,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: 16,
@@ -278,6 +318,28 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: '800',
+  },
+  settingsButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalContainer: {
+    flex: 1,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0,0,0,0.1)',
+  },
+  closeButton: {
+    padding: 8,
   },
   content: {
     flex: 1,

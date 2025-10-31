@@ -8,6 +8,7 @@ import { AchievementProvider } from './src/context/AchievementContext';
 import { MainNavigator } from './src/navigation/MainNavigator';
 import { SplashScreen } from './src/components/SplashScreen';
 import { OnboardingScreen } from './src/screens/OnboardingScreen';
+import { initializeNotifications } from './src/services/notificationService';
 
 const ONBOARDING_KEY = '@TaskNest:onboarding_completed';
 
@@ -18,6 +19,7 @@ export default function App() {
 
   useEffect(() => {
     checkOnboardingStatus();
+    initializeNotifications();
   }, []);
 
   const checkOnboardingStatus = async () => {

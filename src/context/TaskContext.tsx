@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Task, EnergyLevel, Priority, Category } from '../types/task.types';
+import { scheduleTaskNotification, scheduleDailyReminder } from '../services/notificationService';
 
 interface TaskContextType {
   tasks: Task[];
@@ -94,24 +95,62 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       isScheduled: !!(scheduledDate || scheduledTime),
     };
     setTasks([newTask, ...tasks]);
+    
+    // Schedule notification if task has date and time
+    if (scheduledDate && scheduledTime) {
+      scheduleTaskNotification(newTask).then(notificationId => {
+        console.log('📅 Task notification scheduled:', notificationId);
+        console.log('📅 Task:', newTask.title);
+        console.log('📅 Date:', new Date(scheduledDate).toLocaleString('tr-TR'));
+        console.log('📅 Time:', scheduledTime);
+      });
+    }
+    
+    // Update daily reminder with today's tasks
+    const allTasks = [newTask, ...tasks];
+    const today = new Date();
+    const todayTasks = allTasks.filter(t => {
+      if (!t.scheduledDate) return false;
+      const taskDate = new Date(t.scheduledDate);
+      return taskDate.toDateString() === today.toDateString();
+    });
+    scheduleDailyReminder(todayTasks);
   };
 
   const deleteTask = (id: string) => {
-    setTasks(tasks.filter((task) => task.id !== id));
+    const updatedTasks = tasks.filter((task) => task.id !== id);
+    setTasks(updatedTasks);
+    
+    // Update daily reminder
+    const today = new Date();
+    const todayTasks = updatedTasks.filter(t => {
+      if (!t.scheduledDate) return false;
+      const taskDate = new Date(t.scheduledDate);
+      return taskDate.toDateString() === today.toDateString();
+    });
+    scheduleDailyReminder(todayTasks);
   };
 
   const toggleTaskCompletion = (id: string) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id
-          ? {
-              ...task,
-              completed: !task.completed,
-              completedAt: !task.completed ? Date.now() : undefined,
-            }
-          : task
-      )
+    const updatedTasks = tasks.map((task) =>
+      task.id === id
+        ? {
+            ...task,
+            completed: !task.completed,
+            completedAt: !task.completed ? Date.now() : undefined,
+          }
+        : task
     );
+    setTasks(updatedTasks);
+    
+    // Update daily reminder
+    const today = new Date();
+    const todayTasks = updatedTasks.filter(t => {
+      if (!t.scheduledDate) return false;
+      const taskDate = new Date(t.scheduledDate);
+      return taskDate.toDateString() === today.toDateString();
+    });
+    scheduleDailyReminder(todayTasks);
   };
 
   const updateTask = (
@@ -125,24 +164,38 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     scheduledDate?: number,
     scheduledTime?: string
   ) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id 
-          ? { 
-              ...task, 
-              title, 
-              note, 
-              energy, 
-              priority, 
-              category, 
-              estimatedDuration,
-              scheduledDate,
-              scheduledTime,
-              isScheduled: !!(scheduledDate || scheduledTime),
-            } 
-          : task
-      )
+    const updatedTasks = tasks.map((task) =>
+      task.id === id 
+        ? { 
+            ...task, 
+            title, 
+            note, 
+            energy, 
+            priority, 
+            category, 
+            estimatedDuration,
+            scheduledDate,
+            scheduledTime,
+            isScheduled: !!(scheduledDate || scheduledTime),
+          } 
+        : task
     );
+    setTasks(updatedTasks);
+    
+    // Reschedule notification for updated task
+    const updatedTask = updatedTasks.find(t => t.id === id);
+    if (updatedTask && scheduledDate && scheduledTime) {
+      scheduleTaskNotification(updatedTask);
+    }
+    
+    // Update daily reminder
+    const today = new Date();
+    const todayTasks = updatedTasks.filter(t => {
+      if (!t.scheduledDate) return false;
+      const taskDate = new Date(t.scheduledDate);
+      return taskDate.toDateString() === today.toDateString();
+    });
+    scheduleDailyReminder(todayTasks);
   };
 
   return (
@@ -168,3 +221,6 @@ export const useTasks = (): TaskContextType => {
   }
   return context;
 };
+
+// Alias for consistency
+export const useTaskContext = useTasks;

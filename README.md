@@ -65,6 +65,20 @@
 - 🔄 **Achievement Integration**: Completing tasks from calendar counts for streaks and achievements
 - 🌐 **Weekday Localization**: Weekday names adapt to selected language
 
+#### 🔔 Smart Notifications & Reminders (New!)
+- ⏰ **Task Reminders**: Automatic notifications 5 minutes before scheduled tasks
+- 📅 **Daily Reminders**: Customizable morning reminder with task summary
+  - Shows today's task count and next upcoming task
+  - Customizable time with native time picker
+  - Smart messages based on your schedule
+- 🔥 **Streak Reminders**: Evening reminder (8 PM) if you haven't completed tasks today
+- 🏆 **Achievement Notifications**: Instant notifications when you unlock new achievements
+- ⚙️ **Granular Controls**: Toggle each notification type independently
+- 🔕 **Smart Scheduling**: Won't schedule notifications for tasks less than 5 minutes away
+- 🐛 **Debug Tools**: Built-in notification debugger to view all scheduled notifications
+- 📱 **Native Integration**: Uses iOS/Android native notification systems
+- 🌐 **Localized Messages**: All notifications respect your language selection
+
 #### User Experience
 - 🎯 **Smart Onboarding**: Interactive 4-step tutorial for first-time users
 - 🌙 **Dark/Light Theme**: Beautiful pastel themes with automatic switching
@@ -87,6 +101,8 @@
 - **i18n-js** for internationalization with reactive updates
 - **React Native Reanimated v4** for 60fps smooth animations
 - **React Native Confetti Cannon** for celebration effects
+- **Expo Notifications** for local notifications and reminders
+- **React Native Community DateTimePicker** for native date/time selection
 - **Expo Vector Icons** for beautiful icons
 - **ESLint & Prettier** for code quality
 
@@ -164,6 +180,7 @@ TaskNest/
 │   │   ├── CalendarScreen.tsx         # V2 Monthly calendar view
 │   │   ├── ScheduledScreen.tsx        # V1 Scheduled tasks list
 │   │   ├── StatsScreen.tsx            # Statistics & achievements
+│   │   ├── NotificationSettingsScreen.tsx # Notification preferences
 │   │   └── OnboardingScreen.tsx       # First-time user flow
 │   ├── context/         # React Context providers
 │   │   ├── ThemeContext.tsx           # Theme management
@@ -171,7 +188,8 @@ TaskNest/
 │   │   ├── TaskContext.tsx            # Task state & persistence
 │   │   └── AchievementContext.tsx     # Achievement & streak logic
 │   ├── services/        # External services
-│   │   └── aiService.ts               # Google Gemini AI integration
+│   │   ├── aiService.ts               # Google Gemini AI integration
+│   │   └── notificationService.ts     # Notification scheduling & management
 │   ├── navigation/      # React Navigation setup
 │   │   └── MainNavigator.tsx          # Material Top Tabs
 │   ├── types/           # TypeScript type definitions
@@ -263,6 +281,20 @@ This project is open source and available under the MIT License.
 - 🔄 **Başarım Entegrasyonu**: Takvimden görev tamamlama serileri ve başarımları sayar
 - 🌐 **Gün Yerelleştirme**: Gün isimleri seçilen dile uyum sağlar
 
+#### 🔔 Akıllı Bildirimler & Hatırlatıcılar (Yeni!)
+- ⏰ **Görev Hatırlatıcıları**: Zamanlanmış görevlerden 5 dakika önce otomatik bildirimler
+- 📅 **Günlük Hatırlatıcılar**: Görev özeti ile özelleştirilebilir sabah hatırlatıcısı
+  - Bugünkü görev sayısını ve en yakın görevi gösterir
+  - Native saat seçici ile özelleştirilebilir zaman
+  - Programınıza göre akıllı mesajlar
+- 🔥 **Seri Hatırlatıcıları**: Bugün görev tamamlamadıysanız akşam (20:00) hatırlatma
+- 🏆 **Başarım Bildirimleri**: Yeni başarım kilidini açtığınızda anlık bildirimler
+- ⚙️ **Detaylı Kontroller**: Her bildirim türünü bağımsız olarak açıp kapatın
+- 🔕 **Akıllı Zamanlama**: 5 dakikadan az kalan görevler için bildirim zamanlamaz
+- 🐛 **Hata Ayıklama Araçları**: Tüm zamanlanmış bildirimleri görüntülemek için yerleşik hata ayıklayıcı
+- 📱 **Native Entegrasyon**: iOS/Android native bildirim sistemlerini kullanır
+- 🌐 **Yerelleştirilmiş Mesajlar**: Tüm bildirimler dil seçiminize uyar
+
 #### Kullanıcı Deneyimi
 - 🎯 **Akıllı Karşılama**: İlk kullanıcılar için 4 adımlı interaktif öğretici
 - 🌙 **Koyu/Açık Tema**: Otomatik geçişli güzel pastel temalar
@@ -285,6 +317,8 @@ This project is open source and available under the MIT License.
 - Reaktif çok dilli destek için **i18n-js**
 - 60fps akıcı animasyonlar için **React Native Reanimated v4**
 - Kutlama efektleri için **React Native Confetti Cannon**
+- Yerel bildirimler ve hatırlatıcılar için **Expo Notifications**
+- Native tarih/saat seçimi için **React Native Community DateTimePicker**
 - Güzel ikonlar için **Expo Vector Icons**
 - Kod kalitesi için **ESLint & Prettier**
 
@@ -374,8 +408,11 @@ _Ekran görüntüleri eklenecek_
 - [x] ~~AI saat ve tarih önerileri~~
 - [x] ~~V1 Scheduled Tasks (liste görünümü)~~
 - [x] ~~V2 Calendar View (aylık takvim)~~
+- [x] ~~Bildirim desteği (zamanlanan görevler için)~~
+- [x] ~~Günlük hatırlatıcılar~~
+- [x] ~~Seri hatırlatıcıları~~
+- [x] ~~Başarım bildirimleri~~
 - [ ] Haftalık özet raporu
-- [ ] Bildirim desteği (zamanlanan görevler için)
 - [ ] Görev tekrarlama (recurring tasks)
 - [ ] Veri yedekleme/geri yükleme
 - [ ] Görev arama özelliği
