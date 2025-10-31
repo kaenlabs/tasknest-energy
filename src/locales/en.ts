@@ -54,6 +54,29 @@ export const en = {
   completedCount: 'Completed',
   pendingCount: 'Pending',
 
+  // Tutorial
+  tutorial: {
+    skip: 'Skip',
+    next: 'Next',
+    gotIt: 'Got it!',
+    step1: {
+      title: '➕ Add New Task',
+      description: 'Tap here to add new tasks. Set a title, note, and energy level.',
+    },
+    step2: {
+      title: '✅ Complete Tasks',
+      description: 'Tap the circle button on task cards to mark them as complete.',
+    },
+    step3: {
+      title: '🎯 Filter Tasks',
+      description: 'Filter tasks by energy level or status. Focus on high-energy tasks in the morning!',
+    },
+    step4: {
+      title: '🎨 Theme and Language',
+      description: 'Use the top-right buttons to change theme and select language.',
+    },
+  },
+
   // Onboarding
   onboarding: {
     skip: 'Skip',

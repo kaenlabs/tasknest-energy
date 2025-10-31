@@ -16,6 +16,15 @@ export const DevTools: React.FC = () => {
     }
   };
 
+  const clearTutorial = async () => {
+    try {
+      await AsyncStorage.removeItem('@TaskNest:tutorial_completed');
+      Alert.alert('Success', 'Tutorial reset! Restart the app to see it again.');
+    } catch (error) {
+      Alert.alert('Error', 'Could not reset tutorial');
+    }
+  };
+
   const clearAllData = async () => {
     Alert.alert(
       'Clear All Data?',
@@ -48,6 +57,14 @@ export const DevTools: React.FC = () => {
         >
           <Ionicons name="refresh" size={16} color="#fff" />
           <Text style={styles.buttonText}>Reset Onboarding</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.button, { backgroundColor: '#FCD34D' }]}
+          onPress={clearTutorial}
+        >
+          <Ionicons name="help-circle" size={16} color="#000" />
+          <Text style={[styles.buttonText, { color: '#000' }]}>Reset Tutorial</Text>
         </TouchableOpacity>
 
         <TouchableOpacity

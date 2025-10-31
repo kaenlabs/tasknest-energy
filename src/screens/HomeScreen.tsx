@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -8,7 +8,9 @@ import {
   LayoutAnimation,
   Platform,
   UIManager,
+  Dimensions,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { useTasks } from '../context/TaskContext';
@@ -20,6 +22,11 @@ import { TaskCard } from '../components/TaskCard';
 import { AddTaskModal } from '../components/AddTaskModal';
 import { EmptyState } from '../components/EmptyState';
 import { DevTools } from '../components/DevTools';
+import { AppTutorial } from '../components/AppTutorial';
+import { translate } from '../locales/i18n';
+
+const { width, height } = Dimensions.get('window');
+const TUTORIAL_KEY = '@TaskNest:tutorial_completed';
 
 // Enable LayoutAnimation on Android
 if (Platform.OS === 'android') {
@@ -33,8 +40,81 @@ export const HomeScreen: React.FC = () => {
   const { tasks, addTask, deleteTask, toggleTaskCompletion } = useTasks();
   const [activeFilter, setActiveFilter] = useState<TaskFilter>('all');
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
 
   const animatedValues = useRef<{ [key: string]: Animated.Value }>({}).current;
+
+  useEffect(() => {
+    checkTutorialStatus();
+  }, []);
+
+  const checkTutorialStatus = async () => {
+    try {
+      const value = await AsyncStorage.getItem(TUTORIAL_KEY);
+      if (value === null && tasks.length === 0) {
+        // Show tutorial for first-time users with no tasks
+        setTimeout(() => setShowTutorial(true), 500);
+      }
+    } catch (error) {
+      console.error('Error checking tutorial status:', error);
+    }
+  };
+
+  const handleTutorialComplete = async () => {
+    try {
+      await AsyncStorage.setItem(TUTORIAL_KEY, 'true');
+      setShowTutorial(false);
+    } catch (error) {
+      console.error('Error saving tutorial status:', error);
+    }
+  };
+
+  const tutorialSteps = [
+    {
+      title: translate('tutorial.step1.title'),
+      description: translate('tutorial.step1.description'),
+      targetPosition: {
+        x: width - 104,
+        y: height - 110,
+        width: 64,
+        height: 64,
+      },
+      arrow: 'bottom' as const,
+    },
+    {
+      title: translate('tutorial.step2.title'),
+      description: translate('tutorial.step2.description'),
+      targetPosition: {
+        x: 20,
+        y: height / 2 - 50,
+        width: 100,
+        height: 100,
+      },
+      arrow: 'left' as const,
+    },
+    {
+      title: translate('tutorial.step3.title'),
+      description: translate('tutorial.step3.description'),
+      targetPosition: {
+        x: 20,
+        y: 180,
+        width: width - 40,
+        height: 50,
+      },
+      arrow: 'top' as const,
+    },
+    {
+      title: translate('tutorial.step4.title'),
+      description: translate('tutorial.step4.description'),
+      targetPosition: {
+        x: width - 120,
+        y: 60,
+        width: 100,
+        height: 44,
+      },
+      arrow: 'top' as const,
+    },
+  ];
 
   const getFilteredTasks = (): Task[] => {
     let filtered = [...tasks];
@@ -139,6 +219,12 @@ export const HomeScreen: React.FC = () => {
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
         onSave={handleAddTask}
+      />
+
+      <AppTutorial
+        visible={showTutorial}
+        steps={tutorialSteps}
+        onComplete={handleTutorialComplete}
       />
 
       <DevTools />

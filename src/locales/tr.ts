@@ -54,6 +54,29 @@ export const tr = {
   completedCount: 'Tamamlanan',
   pendingCount: 'Bekleyen',
 
+  // Tutorial
+  tutorial: {
+    skip: 'Atla',
+    next: 'İleri',
+    gotIt: 'Anladım!',
+    step1: {
+      title: '➕ Yeni Görev Ekle',
+      description: 'Buraya dokunarak yeni görevler ekleyebilirsiniz. Başlık, not ve enerji seviyesi belirleyin.',
+    },
+    step2: {
+      title: '✅ Görevleri Tamamla',
+      description: 'Görev kartlarındaki yuvarlak butona dokunarak görevleri tamamlayabilirsiniz.',
+    },
+    step3: {
+      title: '🎯 Filtrele',
+      description: 'Görevleri enerji seviyesine veya durumuna göre filtreleyin. Sabahları yüksek enerjili görevlere odaklanın!',
+    },
+    step4: {
+      title: '🎨 Tema ve Dil',
+      description: 'Sağ üstteki butonlarla temayı değiştirebilir ve dil seçebilirsiniz.',
+    },
+  },
+
   // Onboarding
   onboarding: {
     skip: 'Atla',
