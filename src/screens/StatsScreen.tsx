@@ -6,7 +6,7 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native';
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTasks } from '../context/TaskContext';
 import { useTheme } from '../context/ThemeContext';
@@ -58,7 +58,15 @@ export const StatsScreen: React.FC = () => {
     return acc;
   }, {} as Record<Priority, number>);
 
-  const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const weekDays = [
+    translate('weekDays.mon'),
+    translate('weekDays.tue'),
+    translate('weekDays.wed'),
+    translate('weekDays.thu'),
+    translate('weekDays.fri'),
+    translate('weekDays.sat'),
+    translate('weekDays.sun'),
+  ];
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
@@ -142,7 +150,7 @@ export const StatsScreen: React.FC = () => {
         {/* Category Distribution */}
         <View style={[styles.section, { backgroundColor: theme.surface }]}>
           <Text style={[styles.sectionTitle, { color: theme.text }]}>
-            {translate('categories.work')} → {translate('categories.other')}
+            {translate('categoryDistribution')}
           </Text>
           <View style={styles.categoryList}>
             {(['work', 'personal', 'health', 'shopping', 'other'] as Category[]).map(
@@ -190,7 +198,7 @@ export const StatsScreen: React.FC = () => {
         {/* Priority Distribution */}
         <View style={[styles.section, { backgroundColor: theme.surface }]}>
           <Text style={[styles.sectionTitle, { color: theme.text }]}>
-            {translate('priority.label')}
+            {translate('priorityDistribution')}
           </Text>
           <View style={styles.priorityList}>
             {(['high', 'medium', 'low'] as Priority[]).map((priority) => {

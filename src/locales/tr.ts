@@ -126,4 +126,19 @@ export const tr = {
     tasks: 'Görevler',
     statistics: 'İstatistikler',
   },
+
+  // Week days (short)
+  weekDays: {
+    mon: 'Pzt',
+    tue: 'Sal',
+    wed: 'Çar',
+    thu: 'Per',
+    fri: 'Cum',
+    sat: 'Cmt',
+    sun: 'Paz',
+  },
+
+  // Stats screen sections
+  categoryDistribution: 'Kategori Dağılımı',
+  priorityDistribution: 'Öncelik Dağılımı',
 };

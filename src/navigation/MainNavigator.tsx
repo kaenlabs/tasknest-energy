@@ -1,6 +1,7 @@
 import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { NavigationContainer } from '@react-navigation/native';
+import { View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { HomeScreen } from '../screens/HomeScreen';
@@ -12,7 +13,7 @@ export type RootTabParamList = {
   Statistics: undefined;
 };
 
-const Tab = createBottomTabNavigator<RootTabParamList>();
+const Tab = createMaterialTopTabNavigator<RootTabParamList>();
 
 export const MainNavigator: React.FC = () => {
   const { theme } = useTheme();
@@ -20,22 +21,26 @@ export const MainNavigator: React.FC = () => {
   return (
     <NavigationContainer>
       <Tab.Navigator
+        tabBarPosition="bottom"
         screenOptions={{
-          headerShown: false,
           tabBarActiveTintColor: theme.primary,
           tabBarInactiveTintColor: theme.textSecondary,
           tabBarStyle: {
             backgroundColor: theme.background,
             borderTopColor: theme.border,
             borderTopWidth: 1,
-            height: 60,
-            paddingBottom: 8,
-            paddingTop: 8,
           },
           tabBarLabelStyle: {
-            fontSize: 12,
+            fontSize: 13,
             fontWeight: '600',
+            textTransform: 'none',
           },
+          tabBarIndicatorStyle: {
+            backgroundColor: theme.primary,
+            height: 3,
+          },
+          tabBarShowIcon: true,
+          swipeEnabled: true,
         }}
       >
         <Tab.Screen
@@ -43,8 +48,8 @@ export const MainNavigator: React.FC = () => {
           component={HomeScreen}
           options={{
             tabBarLabel: translate('tabs.tasks'),
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="list" size={size} color={color} />
+            tabBarIcon: ({ color }) => (
+              <Ionicons name="list" size={24} color={color} />
             ),
           }}
         />
@@ -53,8 +58,8 @@ export const MainNavigator: React.FC = () => {
           component={StatsScreen}
           options={{
             tabBarLabel: translate('tabs.statistics'),
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="stats-chart" size={size} color={color} />
+            tabBarIcon: ({ color }) => (
+              <Ionicons name="stats-chart" size={24} color={color} />
             ),
           }}
         />

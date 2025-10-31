@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider } from './src/context/ThemeContext';
 import { LocaleProvider } from './src/context/LocaleContext';
 import { TaskProvider } from './src/context/TaskContext';
@@ -69,12 +70,14 @@ export default function App() {
   }
 
   return (
-    <ThemeProvider>
-      <LocaleProvider>
-        <TaskProvider>
-          <MainNavigator />
-        </TaskProvider>
-      </LocaleProvider>
-    </ThemeProvider>
+    <SafeAreaProvider>
+      <ThemeProvider>
+        <LocaleProvider>
+          <TaskProvider>
+            <MainNavigator />
+          </TaskProvider>
+        </LocaleProvider>
+      </ThemeProvider>
+    </SafeAreaProvider>
   );
 }

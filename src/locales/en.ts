@@ -126,4 +126,19 @@ export const en = {
     tasks: 'Tasks',
     statistics: 'Statistics',
   },
+
+  // Week days (short)
+  weekDays: {
+    mon: 'Mon',
+    tue: 'Tue',
+    wed: 'Wed',
+    thu: 'Thu',
+    fri: 'Fri',
+    sat: 'Sat',
+    sun: 'Sun',
+  },
+
+  // Stats screen sections
+  categoryDistribution: 'Category Distribution',
+  priorityDistribution: 'Priority Distribution',
 };
