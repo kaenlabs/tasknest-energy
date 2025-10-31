@@ -11,14 +11,25 @@ import {
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { EnergyLevel } from '../types/task.types';
+import { EnergyLevel, Priority, Category } from '../types/task.types';
 import { useTheme } from '../context/ThemeContext';
 import { translate } from '../locales/i18n';
+import {
+  getCategoryIcon,
+  getCategoryColor,
+  getPriorityColor,
+} from '../utils/taskHelpers';
 
 interface AddTaskModalProps {
   visible: boolean;
   onClose: () => void;
-  onSave: (title: string, note: string, energy: EnergyLevel) => void;
+  onSave: (
+    title: string,
+    note: string,
+    energy: EnergyLevel,
+    priority: Priority,
+    category: Category
+  ) => void;
 }
 
 export const AddTaskModal: React.FC<AddTaskModalProps> = ({
@@ -30,13 +41,17 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
   const [title, setTitle] = useState('');
   const [note, setNote] = useState('');
   const [energy, setEnergy] = useState<EnergyLevel>('high');
+  const [priority, setPriority] = useState<Priority>('medium');
+  const [category, setCategory] = useState<Category>('other');
 
   const handleSave = () => {
     if (title.trim()) {
-      onSave(title.trim(), note.trim(), energy);
+      onSave(title.trim(), note.trim(), energy, priority, category);
       setTitle('');
       setNote('');
       setEnergy('high');
+      setPriority('medium');
+      setCategory('other');
       onClose();
     }
   };
@@ -45,6 +60,8 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
     setTitle('');
     setNote('');
     setEnergy('high');
+    setPriority('medium');
+    setCategory('other');
     onClose();
   };
 
@@ -175,6 +192,85 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
                 </TouchableOpacity>
               </View>
             </View>
+
+            {/* Category Selection */}
+            <View style={styles.inputGroup}>
+              <Text style={[styles.label, { color: theme.text }]}>
+                {translate('categories.work')} / {translate('categories.other')}
+              </Text>
+              <View style={styles.categoryGrid}>
+                {(['work', 'personal', 'health', 'shopping', 'other'] as Category[]).map(
+                  (cat) => (
+                    <TouchableOpacity
+                      key={cat}
+                      style={[
+                        styles.categoryButton,
+                        {
+                          backgroundColor:
+                            category === cat ? getCategoryColor(cat) + '30' : theme.surface,
+                          borderColor:
+                            category === cat ? getCategoryColor(cat) : theme.border,
+                        },
+                      ]}
+                      onPress={() => setCategory(cat)}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={styles.categoryEmoji}>{getCategoryIcon(cat)}</Text>
+                      <Text
+                        style={[
+                          styles.categoryText,
+                          { color: category === cat ? theme.text : theme.textSecondary },
+                        ]}
+                      >
+                        {translate(`categories.${cat}`)}
+                      </Text>
+                    </TouchableOpacity>
+                  )
+                )}
+              </View>
+            </View>
+
+            {/* Priority Selection */}
+            <View style={styles.inputGroup}>
+              <Text style={[styles.label, { color: theme.text }]}>
+                {translate('priority.label')}
+              </Text>
+              <View style={styles.priorityOptions}>
+                {(['low', 'medium', 'high'] as Priority[]).map((prior) => (
+                  <TouchableOpacity
+                    key={prior}
+                    style={[
+                      styles.priorityButton,
+                      {
+                        backgroundColor:
+                          priority === prior
+                            ? getPriorityColor(prior) + '20'
+                            : theme.surface,
+                        borderColor:
+                          priority === prior ? getPriorityColor(prior) : theme.border,
+                      },
+                    ]}
+                    onPress={() => setPriority(prior)}
+                    activeOpacity={0.7}
+                  >
+                    <View
+                      style={[
+                        styles.priorityDot,
+                        { backgroundColor: getPriorityColor(prior) },
+                      ]}
+                    />
+                    <Text
+                      style={[
+                        styles.priorityText,
+                        { color: priority === prior ? theme.text : theme.textSecondary },
+                      ]}
+                    >
+                      {translate(`priority.${prior}`)}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
           </ScrollView>
 
           <View style={styles.modalActions}>
@@ -277,6 +373,50 @@ const styles = StyleSheet.create({
   },
   energyText: {
     fontSize: 16,
+    fontWeight: '600',
+  },
+  categoryGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  categoryButton: {
+    width: '30%',
+    aspectRatio: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 16,
+    borderWidth: 2,
+  },
+  categoryEmoji: {
+    fontSize: 32,
+    marginBottom: 4,
+  },
+  categoryText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  priorityOptions: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  priorityButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 2,
+  },
+  priorityDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginRight: 8,
+  },
+  priorityText: {
+    fontSize: 14,
     fontWeight: '600',
   },
   modalActions: {

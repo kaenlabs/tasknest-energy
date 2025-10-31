@@ -10,6 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Task } from '../types/task.types';
 import { useTheme } from '../context/ThemeContext';
 import { translate } from '../locales/i18n';
+import { getCategoryIcon, getPriorityColor } from '../utils/taskHelpers';
 
 interface TaskCardProps {
   task: Task;
@@ -74,20 +75,33 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
         <View style={styles.content}>
           <View style={styles.header}>
-            <Text
-              style={[
-                styles.title,
-                {
-                  color: theme.text,
-                  textDecorationLine: task.completed ? 'line-through' : 'none',
-                  opacity: task.completed ? 0.6 : 1,
-                },
-              ]}
-            >
-              {task.title}
-            </Text>
-            <View style={styles.energyBadge}>
-              <Text style={styles.energyIcon}>{energyIcon}</Text>
+            <View style={styles.titleRow}>
+              <View
+                style={[
+                  styles.priorityIndicator,
+                  { backgroundColor: getPriorityColor(task.priority) },
+                ]}
+              />
+              <Text
+                style={[
+                  styles.title,
+                  {
+                    color: theme.text,
+                    textDecorationLine: task.completed ? 'line-through' : 'none',
+                    opacity: task.completed ? 0.6 : 1,
+                  },
+                ]}
+              >
+                {task.title}
+              </Text>
+            </View>
+            <View style={styles.badges}>
+              <View style={styles.categoryBadge}>
+                <Text style={styles.categoryIcon}>{getCategoryIcon(task.category)}</Text>
+              </View>
+              <View style={styles.energyBadge}>
+                <Text style={styles.energyIcon}>{energyIcon}</Text>
+              </View>
             </View>
           </View>
 
@@ -154,18 +168,41 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 4,
   },
+  titleRow: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 8,
+  },
+  priorityIndicator: {
+    width: 4,
+    height: 16,
+    borderRadius: 2,
+    marginRight: 8,
+  },
   title: {
     fontSize: 16,
     fontWeight: '600',
     flex: 1,
-    marginRight: 8,
+  },
+  badges: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  categoryBadge: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+  },
+  categoryIcon: {
+    fontSize: 16,
   },
   energyBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
   },
   energyIcon: {
-    fontSize: 18,
+    fontSize: 16,
   },
   note: {
     fontSize: 14,

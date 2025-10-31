@@ -120,4 +120,10 @@ export const en = {
       description: 'All your tasks are safely stored on your device. No internet connection required.',
     },
   },
+
+  // Tabs
+  tabs: {
+    tasks: 'Tasks',
+    statistics: 'Statistics',
+  },
 };

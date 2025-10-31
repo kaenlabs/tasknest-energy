@@ -142,9 +142,15 @@ export const HomeScreen: React.FC = () => {
     setActiveFilter(filter);
   };
 
-  const handleAddTask = (title: string, note: string, energy: 'low' | 'high') => {
+  const handleAddTask = (
+    title: string,
+    note: string,
+    energy: 'low' | 'high',
+    priority: 'low' | 'medium' | 'high',
+    category: 'work' | 'personal' | 'health' | 'shopping' | 'other'
+  ) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    addTask(title, note, energy);
+    addTask(title, note, energy, priority, category);
   };
 
   const handleDeleteTask = (id: string) => {

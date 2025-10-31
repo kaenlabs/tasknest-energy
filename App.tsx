@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemeProvider } from './src/context/ThemeContext';
 import { LocaleProvider } from './src/context/LocaleContext';
 import { TaskProvider } from './src/context/TaskContext';
-import { HomeScreen } from './src/screens/HomeScreen';
+import { MainNavigator } from './src/navigation/MainNavigator';
 import { SplashScreen } from './src/components/SplashScreen';
 import { OnboardingScreen } from './src/screens/OnboardingScreen';
 
@@ -72,7 +72,7 @@ export default function App() {
     <ThemeProvider>
       <LocaleProvider>
         <TaskProvider>
-          <HomeScreen />
+          <MainNavigator />
         </TaskProvider>
       </LocaleProvider>
     </ThemeProvider>

@@ -120,4 +120,10 @@ export const tr = {
       description: 'Tüm görevleriniz cihazınızda güvenle saklanır. İnternet bağlantısına ihtiyaç yoktur.',
     },
   },
+
+  // Tabs
+  tabs: {
+    tasks: 'Görevler',
+    statistics: 'İstatistikler',
+  },
 };
